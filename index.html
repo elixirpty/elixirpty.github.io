@@ -272,6 +272,23 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
 .chip{border:1px solid var(--line);color:var(--ink);font:500 13px var(--body);letter-spacing:.14em;text-transform:uppercase;padding:9px 18px;transition:border-color .2s,background .2s}
 .chip:hover{border-color:var(--gold)}
 .chip[aria-pressed="true"]{background:var(--gold-grad);color:var(--accent-ink);border-color:transparent;font-weight:600}
+.chips{justify-content:center}
+.tools .chips-gen{flex:1 1 100%;margin-top:-2px}
+.chips-gen .chip{font-size:12px;padding:7px 15px;letter-spacing:.12em}
+.chip small{display:block;margin-top:2px;font:600 8.5px var(--body);letter-spacing:.14em;color:var(--gold)}
+.chip[aria-pressed="true"] small{color:var(--accent-ink)}
+.chip.soon{opacity:.7}
+.cnt .sel,.cnt .n{display:block}
+.cnt .sel{color:var(--gold-hi);letter-spacing:.2em}
+.cnt .sel + .n{margin-top:5px;color:var(--muted);font-size:11px;letter-spacing:.22em}
+@media (max-width:640px){
+  .chip{padding:8px 14px;letter-spacing:.1em}
+  .chips-gen .chip{padding:7px 12px;font-size:12px;letter-spacing:.08em}
+}
+.soon-box{grid-column:1/-1;display:grid;gap:10px;justify-items:center;text-align:center;padding:34px 18px;border:1px dashed var(--line);border-radius:16px;background:rgba(224,163,58,.04)}
+.soon-box b{font:600 14px var(--display);letter-spacing:.24em;text-transform:uppercase;color:var(--gold)}
+.soon-box p{margin:0;max-width:34ch;color:var(--muted);line-height:1.5}
+.soon-box .avisa{grid-column:auto;width:100%;max-width:320px}
 input[type=text],input[type=email],input[type=search],input[type=date],input[type=time],select,textarea{background:#14110d;border:1px solid rgba(212,150,42,.3);color:var(--ink)}
 input::placeholder,textarea::placeholder{color:#7d7568}
 input:focus,select:focus,textarea:focus{outline:0;border-color:var(--gold);box-shadow:0 0 0 3px rgba(224,163,58,.18)}
@@ -535,6 +552,13 @@ body.has-bar .fab{bottom:calc(78px + env(safe-area-inset-bottom))}
 .sm-sub{display:grid;gap:0;margin:0 0 4px 22px;padding-left:12px;border-left:1px solid var(--line)}
 .sm-nav .sm-sub a{min-height:42px;padding:0 10px;color:var(--muted);font:400 14.5px var(--body)}
 .sm-sub:empty{display:none}
+.sm-sub{margin-bottom:6px}
+.sm-grp{display:grid;gap:0;margin-bottom:6px}
+.sm-nav .sm-sub .sm-grp>a small{margin-left:10px;font:600 10px var(--body);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.sm-gens{display:flex;flex-wrap:wrap;gap:6px;padding:0 10px 6px}
+.sm-nav .sm-sub .sm-gens a{min-height:34px;padding:0 13px;border:1px solid var(--line);border-radius:999px;font:500 13px var(--body);color:var(--muted)}
+.sm-nav .sm-sub .sm-gens a.soon{opacity:.55}
+.sm-nav .sm-sub .sm-gens a:hover,.sm-nav .sm-sub .sm-gens a:focus-visible{border-color:var(--gold);color:var(--ink)}
 .sm-sep{height:1px;margin:10px 8px;background:var(--line)}
 .sm-f{flex:none;display:grid;gap:12px;padding:12px 16px calc(16px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
 .sm-f .btn{width:100%}
@@ -674,7 +698,8 @@ body.has-bar .fab{bottom:calc(78px + env(safe-area-inset-bottom))}
     <section class="wrap" id="catalogo" aria-labelledby="cat-title">
       <div class="tools">
         <h2 id="cat-title"><span class="ttl">Catálogo</span><span class="cnt"><span id="cat-count"></span></span></h2>
-        <div class="chips" id="chips" role="group" aria-label="Filtrar por tipo"></div>
+        <div class="chips" id="chips" role="group" aria-label="Filtrar por categoría"></div>
+        <div class="chips chips-gen" id="chips-gen" role="group" aria-label="Filtrar por género"></div>
         <div class="search">
           <label class="sr" for="q">Buscar fragancia</label>
           <input id="q" type="search" placeholder="Buscar marca o perfume" autocomplete="off">
@@ -977,6 +1002,16 @@ const PACKS = Array.isArray(CATALOGO.packs) && CATALOGO.packs.length ? CATALOGO.
   : (PROMOS.length ? [{ id:'general', cat:null, nombre:'Promo Elixir Packs', niveles:PROMOS }] : []);
 const CAT_ADJ = { 'Árabe':'árabe', 'Diseñador':'de diseñador', 'Nicho':'de nicho' };
 const CAT_PL = { 'Árabe':'árabes', 'Diseñador':'de diseñador', 'Nicho':'de nicho' };
+const CATS = [
+  { id:'Árabe', nombre:'Árabes', full:'Perfumes Árabes' },
+  { id:'Diseñador', nombre:'Diseñadores', full:'Perfumes Diseñadores' },
+  { id:'Nicho', nombre:'Nicho', full:'Perfumes Nicho' }
+];
+const GENS = [
+  { id:'Hombre', nombre:'Hombres', para:'para hombres' },
+  { id:'Mujer', nombre:'Mujeres', para:'para mujeres' },
+  { id:'Unisex', nombre:'Unisex', para:'unisex' }
+];
 
 /* FOTOS:INICIO  (id del perfume -> imagen; sin foto se dibuja el frasco) */
 const FOTOS = {
@@ -1065,7 +1100,7 @@ function buildMessage(st){
   L.push('Hora deseada: ' + fmtHora(f.hora));
   L.push('Pago: ' + (f.pago || '-'), '');
   L.push('Productos:');
-  its.forEach((i, n) => L.push((n + 1) + ') ' + i.p.marca + ' ' + i.p.modelo + ' - ' + nameOf(i.p, i.ml) + ' x' + i.q + ' - ' + money(i.total)));
+  its.forEach((i, n) => L.push((n + 1) + ') ' + i.p.marca + ' ' + i.p.modelo + ' - ' + nameOf(i.p, i.ml) + ' x' + i.q + ' - ' + money(i.total) + (i.p.sku ? ' (Cód. ' + i.p.sku + ')' : '')));
   gift(its).list.filter(r => r.n).forEach(r => L.push(r.pack.nombre + ': ' + pl(r.n, 'Decant Sorpresa', 'Decants Sorpresa') + ' de 2 ml (' + (r.pack.cat ? 'perfume ' + CAT_ADJ[r.pack.cat] + ', ' : '') + 'la elige ' + CONFIG.tienda + ')'));
   L.push('');
   L.push('Subtotal: ' + money(t.sub));
@@ -1127,7 +1162,7 @@ const state = {
   cart: LS.get('elx_cart') || {},
   form: Object.assign({ nombre:'', apellido:'', nac:'', correo:'', prov:'Panamá', fuente:'', referido:'', entrega:'Domicilio', fecha:'', hora:'', pago:'', notas:'' }, LS.get('elx_form') || {}),
   code: LS.get('elx_code') || newCode(),
-  sel: {}, tipo: 'Todos', q: '', promoSel: null
+  sel: {}, tipo: 'Todos', gen: 'Todos', q: '', promoSel: null
 };
 state.cart = Object.fromEntries(Object.entries(state.cart).filter(([k, q]) => cartItems({ [k]:q }).length));
 if(state.form.fecha && state.form.fecha < hoy()) state.form.fecha = '';
@@ -1146,7 +1181,7 @@ function mediaBase(p, ml){
   if(p.foto) return '<img src="' + esc(p.foto) + '" alt="' + esc(p.marca + ' ' + p.modelo) + '" loading="lazy"><span class="szb">' + (ml === 100 ? 'Frasco ' + mlF(p) + ' ml' : 'Decant ' + ml + ' ml') + '</span>';
   return vial(ml, p.tipo === 'Árabe' ? 'a' : 'd', ml === 100 ? mlF(p) : undefined);
 }
-const RIBBON = '<svg class="rib" viewBox="0 0 100 100" role="img" aria-label="Agotado"><defs><linearGradient id="ribg" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0" stop-color="#ff5a68"/><stop offset=".4" stop-color="#f12b40"/><stop offset="1" stop-color="#b01f2f"/></linearGradient></defs><polygon points="55,0 100,0 0,100 0,55" fill="url(#ribg)"/><polygon points="55,0 100,0 99,1 54.5,1" fill="#fff" opacity=".18"/><text x="38.75" y="38.75" text-anchor="middle" dominant-baseline="central" transform="rotate(-45 38.75 38.75)">AGOTADO</text></svg>';
+const RIBBON = '<svg class="rib" viewBox="0 0 100 100" role="img" aria-label="Agotado"><defs><linearGradient id="ribg" x1="100%" y1="0%" x2="0%" y2="100%"><stop offset="0" stop-color="#ff5a68"/><stop offset=".4" stop-color="#f12b40"/><stop offset="1" stop-color="#b01f2f"/></linearGradient></defs><polygon points="55,0 100,0 0,100 0,55" fill="url(#ribg)"/><polygon points="55,0 100,0 99,1 54.5,1" fill="#fff" opacity=".18"/><text x="38.75" y="38.75" text-anchor="middle" dominant-baseline="central" transform="rotate(-45 38.75 38.75)">SOLD OUT</text></svg>';
 function mediaHTML(p, ml){
   return mediaBase(p, ml) + (isOut(p, ml) ? RIBBON : '');
 }
@@ -1178,7 +1213,6 @@ function cardHTML(p){
     +   '<p class="marca">' + esc(p.marca) + '</p>'
     +   '<h3 class="modelo">' + esc(p.modelo) + '</h3>'
     +   '<p class="meta"><span class="tag ' + (tone === 'a' ? 'arabe' : 'dis') + '">' + esc(p.tipo) + '</span><span>' + esc(p.conc) + ' · ' + esc(p.genero) + '</span></p>'
-    +   '<p class="sku">' + esc(p.sku) + '</p>'
     +   '<p class="incart" data-incart></p>'
     + '</div>'
     + '<fieldset class="sizes"><legend class="sr">Tamaño de ' + esc(p.marca + ' ' + p.modelo) + '</legend>' + opts + '</fieldset>'
@@ -1187,12 +1221,29 @@ function cardHTML(p){
     + avisoHTML(p)
     + '</article>';
 }
+const pasa = (p, tipo, gen) => (tipo === 'Todos' || p.tipo === tipo) && (gen === 'Todos' || p.genero === gen);
+function selLabel(){
+  const c = CATS.find(x => x.id === state.tipo), g = GENS.find(x => x.id === state.gen);
+  if(!c && !g) return '';
+  return (c ? c.full : 'Perfumes') + (g ? ' · ' + g.nombre : '');
+}
+function soonHTML(){
+  const c = CATS.find(x => x.id === state.tipo), g = GENS.find(x => x.id === state.gen);
+  const nombre = 'perfumes' + (c ? ' ' + CAT_PL[c.id] : '') + (g ? ' ' + g.para : '');
+  const msg = 'Hola, quisiera que me avisen cuando estén disponibles los ' + nombre + '.';
+  return '<div class="soon-box"><b>Próximamente</b><p>Estamos preparando esta selección. Escríbenos y te avisamos cuando esté disponible.</p>'
+    + '<a class="avisa" href="https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent(msg) + '" target="_blank" rel="noopener noreferrer">' + BELL + 'Avísame cuando esté disponible</a></div>';
+}
 function renderCatalog(){
   const q = norm(state.q.trim());
-  const list = PERFUMES.filter(p => (state.tipo === 'Todos' || p.tipo === state.tipo) && (!q || norm(p.marca + ' ' + p.modelo).includes(q)))
+  const list = PERFUMES.filter(p => pasa(p, state.tipo, state.gen) && (!q || norm(p.marca + ' ' + p.modelo).includes(q)))
     .map((p, i) => ({ p, i })).sort((a, b) => (allOut(a.p) - allOut(b.p)) || (a.i - b.i)).map(x => x.p);   // agotados al final
-  $('#grid').innerHTML = list.length ? list.map(cardHTML).join('') : '<p class="empty-cat">No hay fragancias con ese filtro. Prueba con otra búsqueda.</p>';
-  $('#cat-count').textContent = list.length + (list.length === 1 ? ' fragancia' : ' fragancias');
+  const filtrado = state.tipo !== 'Todos' || state.gen !== 'Todos';
+  $('#grid').innerHTML = list.length ? list.map(cardHTML).join('')
+    : (!q && filtrado ? soonHTML() : '<p class="empty-cat">No hay fragancias con ese filtro. Prueba con otra búsqueda.</p>');
+  const n = list.length + (list.length === 1 ? ' fragancia' : ' fragancias');
+  const lab = selLabel();
+  $('#cat-count').innerHTML = (lab ? '<span class="sel">' + esc(lab) + '</span>' : '') + '<span class="n">' + (list.length || q || !filtrado ? n : 'Próximamente') + '</span>';
   updateBadges();
 }
 function renderPromoCtx(){
@@ -1203,8 +1254,12 @@ function renderPromoCtx(){
   box.innerHTML = '<span class="t"><b>Promo ' + ps.min + '+' + ps.gift + ' · ' + esc(ps.label) + '</b>Elige ' + ps.min + ' decants de 10 ml y recibe ' + pl(ps.gift, 'Decant Sorpresa', 'Decants Sorpresa') + ' gratis.</span><button type="button" data-promo-off>Ver todo</button>';
 }
 function renderChips(){
-  const tipos = ['Todos', ...new Set(PERFUMES.map(p => p.tipo))];
-  $('#chips').innerHTML = tipos.map(t => '<button class="chip" type="button" data-tipo="' + esc(t) + '" aria-pressed="' + (t === state.tipo) + '">' + esc(t) + '</button>').join('');
+  const hay = (tipo, gen) => PERFUMES.some(p => pasa(p, tipo, gen));
+  const chip = (attr, id, txt, activo, vacio, tenue) => '<button class="chip' + (vacio || tenue ? ' soon' : '') + '" type="button" data-' + attr + '="' + esc(id) + '" aria-pressed="' + activo + '">' + esc(txt) + (vacio ? '<small>Próximamente</small>' : '') + '</button>';
+  $('#chips').innerHTML = chip('tipo', 'Todos', 'Todos', state.tipo === 'Todos', false)
+    + CATS.map(c => chip('tipo', c.id, c.nombre, state.tipo === c.id, !hay(c.id, 'Todos'))).join('');
+  $('#chips-gen').innerHTML = chip('gen', 'Todos', 'Todos', state.gen === 'Todos', false)
+    + GENS.map(g => chip('gen', g.id, g.nombre, state.gen === g.id, false, !hay(state.tipo, g.id))).join('');
 }
 function updateCard(card){
   const p = BY_ID[card.dataset.id];
@@ -1346,9 +1401,13 @@ $('#chips').addEventListener('click', e => {
   const b = e.target.closest('[data-tipo]'); if(!b) return;
   state.tipo = b.dataset.tipo; state.promoSel = null; renderChips(); renderCatalog(); renderPromoCtx();
 });
+$('#chips-gen').addEventListener('click', e => {
+  const b = e.target.closest('[data-gen]'); if(!b) return;
+  state.gen = b.dataset.gen; state.promoSel = null; renderChips(); renderCatalog(); renderPromoCtx();
+});
 $('#promo-ctx').addEventListener('click', e => {
   if(!e.target.closest('[data-promo-off]')) return;
-  state.promoSel = null; state.tipo = 'Todos'; renderChips(); renderCatalog(); renderPromoCtx();
+  state.promoSel = null; state.tipo = 'Todos'; state.gen = 'Todos'; renderChips(); renderCatalog(); renderPromoCtx();
 });
 $('#q').addEventListener('input', e => { state.q = e.target.value; renderCatalog(); });
 $('#open-cart').addEventListener('click', e => openCart(e.currentTarget));
@@ -1496,7 +1555,7 @@ if(PACKS.length){
     const b = e.target.closest('button.eq'); if(!b) return;
     const k = PACKS[act];
     const tipos = new Set(PERFUMES.map(p => p.tipo));
-    state.tipo = k.cat && tipos.has(k.cat) ? k.cat : 'Todos';
+    state.tipo = k.cat && tipos.has(k.cat) ? k.cat : 'Todos'; state.gen = 'Todos';
     state.q = ''; $('#q').value = '';
     state.promoSel = { min: +b.dataset.min, gift: +b.dataset.gift, label: lbl(k) };
     renderChips(); renderCatalog(); renderPromoCtx();
@@ -1510,15 +1569,18 @@ syncForm(); renderChips(); renderCatalog(); renderCart();
   const dlg = $('#menu'); if(!dlg) return;
   const smooth = () => !(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
   const cerrar = () => { if(typeof dlg.close === 'function') dlg.close(); else dlg.removeAttribute('open'); document.body.style.overflow = ''; $('#open-menu').setAttribute('aria-expanded', 'false'); };
-  const filtrar = (tipo, q) => {
-    state.tipo = tipo || 'Todos'; state.q = q || ''; state.promoSel = null; $('#q').value = state.q;
+  const filtrar = (tipo, gen, q) => {
+    state.tipo = tipo || 'Todos'; state.gen = gen || 'Todos'; state.q = q || ''; state.promoSel = null; $('#q').value = state.q;
     renderChips(); renderCatalog(); renderPromoCtx();
   };
   $('#open-menu').addEventListener('click', () => {
     $('#sm-promo').hidden = $('#promo').hidden;
     $('#sm-rev').hidden = $('#resenas').hidden;
-    const tipos = [...new Set(PERFUMES.map(p => p.tipo))].filter(Boolean);
-    $('#sm-cats').innerHTML = tipos.length > 1 ? tipos.map(t => '<a href="#catalogo" data-close data-tipo="' + esc(t) + '">Perfumes ' + esc(CAT_PL[t] || t.toLowerCase()) + '</a>').join('') : '';
+    $('#sm-cats').innerHTML = CATS.map(c => {
+      const hay = PERFUMES.some(p => p.tipo === c.id);
+      return '<div class="sm-grp"><a href="#catalogo" data-close data-tipo="' + esc(c.id) + '">' + esc(c.full) + (hay ? '' : '<small>Próximamente</small>') + '</a>'
+        + '<div class="sm-gens">' + GENS.map(g => '<a href="#catalogo" data-close data-tipo="' + esc(c.id) + '" data-gen="' + esc(g.id) + '"' + (PERFUMES.some(p => pasa(p, c.id, g.id)) ? '' : ' class="soon"') + '>' + esc(g.nombre) + '</a>').join('') + '</div></div>';
+    }).join('');
     const so = $('#social'); const ms = $('#sm-social');
     ms.innerHTML = so ? so.innerHTML : ''; ms.hidden = !ms.innerHTML.trim();
     $('#sm-wa').href = waUrl('Hola, tengo una consulta sobre sus perfumes y decants.');
@@ -1530,14 +1592,14 @@ syncForm(); renderChips(); renderCatalog(); renderCart();
   });
   dlg.addEventListener('click', e => {
     if(e.target === dlg) return cerrar();
-    const a = e.target.closest('a[data-tipo]'); if(a) filtrar(a.dataset.tipo, '');
+    const a = e.target.closest('a[data-tipo]'); if(a) filtrar(a.dataset.tipo, a.dataset.gen || '', '');
     if(e.target.closest('[data-close]')) cerrar();
   });
   dlg.addEventListener('close', () => { document.body.style.overflow = ''; $('#open-menu').setAttribute('aria-expanded', 'false'); });
   $('#sm-form').addEventListener('submit', e => {
     e.preventDefault();
     const v = $('#sm-q').value.trim();
-    filtrar('Todos', v); cerrar();
+    filtrar('Todos', '', v); cerrar();
     $('#catalogo').scrollIntoView({ behavior: smooth() ? 'smooth' : 'auto', block: 'start' });
   });
 })();
