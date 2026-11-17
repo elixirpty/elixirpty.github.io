@@ -3,6 +3,8 @@ window.ELIXIR_CATALOGO = {
 "whatsapp": "50762003794",
 "itbms": 0,
 "preciosProvisionales": true,
+"redes": {"instagram":"https://instagram.com/elixirdecantspty","tiktok":"https://www.tiktok.com/@elixirpty","threads":"https://www.threads.net/@elixirdecantspty","link":"https://link.bio/elixirdecantspty"},
+"resenas": [],
 "perfumes": [
 {"id":"PF-001","sku":"ELX-DIO-001","marca":"Dior","modelo":"Sauvage","conc":"Eau de Parfum","genero":"Hombre","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":10,"10":19.5,"100":192}},
 {"id":"PF-002","sku":"ELX-VAL-001","marca":"Valentino","modelo":"Born in Roma Intense","conc":"Eau de Parfum","genero":"Hombre","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":8,"10":16,"100":159}},
