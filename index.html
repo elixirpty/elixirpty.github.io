@@ -425,6 +425,19 @@ body.has-bar .fab{bottom:calc(78px + env(safe-area-inset-bottom))}
 .etq svg{width:12px;height:12px;flex:none}
 .etq.nuevo{background:var(--silver);color:#14110d}
 .etq.top{background:var(--gold-grad);color:var(--accent-ink)}
+.faq{padding-top:34px;padding-bottom:10px;max-width:720px}
+.faq h2{font:600 clamp(18px,4.6vw,24px) var(--display);letter-spacing:.18em;text-transform:uppercase;color:var(--silver);text-align:center;margin:0 0 18px}
+.faq-list{display:grid;gap:10px}
+.faq details{margin:0;border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,#14110d,#0b0a08);overflow:hidden}
+.faq summary{list-style:none;cursor:pointer;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:15px 16px;color:var(--ink);font:500 15.5px/1.35 var(--body)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:9px;height:9px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(45deg) translate(-2px,-2px);transition:transform .2s}
+.faq details[open]{border-color:rgba(212,150,42,.45)}
+.faq details[open] summary::after{transform:rotate(-135deg) translate(-2px,-2px)}
+.faq summary:focus-visible{outline:2px solid var(--gold-hi);outline-offset:-2px}
+.faq .ans{padding:0 16px 16px;color:var(--muted);font-size:14.5px;line-height:1.6}
+.faq .ans p{margin:0}
+.faq .ans p+p{margin-top:8px}
 .reviews{padding-top:34px;padding-bottom:10px}
 .reviews h2{font:600 clamp(18px,4.6vw,24px) var(--display);letter-spacing:.18em;text-transform:uppercase;color:var(--silver);text-align:center;margin:0 0 18px}
 .rv-list{display:grid;gap:14px;grid-template-columns:1fr}
@@ -577,6 +590,18 @@ body.has-bar .fab{bottom:calc(78px + env(safe-area-inset-bottom))}
     <section class="wrap reviews" id="resenas" aria-labelledby="res-title" hidden>
       <h2 id="res-title">Lo que dicen nuestros clientes</h2>
       <div class="rv-list" id="rv-list"></div>
+    </section>
+
+    <section class="wrap faq" id="faq" aria-labelledby="faq-title">
+      <h2 id="faq-title">Preguntas frecuentes</h2>
+      <div class="faq-list">
+        <details><summary>¿Cómo hago mi pedido?</summary><div class="ans"><p>Elige tus perfumes y tamaños, revisa “Mi pedido”, llena tus datos y toca enviar. Se abre WhatsApp con tu pedido listo para mandarlo; ahí te confirmamos total, entrega y pago.</p></div></details>
+        <details><summary>¿Qué tamaños hay?</summary><div class="ans"><p>Decants de 5 ml y de 10 ml, y la botella de 100 ml. Cada perfume muestra sus precios.</p></div></details>
+        <details><summary>¿Cómo funciona la Promo Elixir Pack?</summary><div class="ans" id="faq-promo"><p>Elige decants de 10 ml y recibe Decants Sorpresa de 2 ml. La fragancia la elige ELIXIR, de la misma categoría de tu pack.</p></div></details>
+        <details><summary>¿Cómo puedo pagar?</summary><div class="ans"><p>Aceptamos Yappy, transferencia bancaria y efectivo. Te confirmamos la forma de pago por WhatsApp, junto con el total.</p></div></details>
+        <details><summary>¿Hacen entregas en mi provincia?</summary><div class="ans"><p>Atendemos las 10 provincias de Panamá. La entrega la coordinamos contigo por WhatsApp después de recibir tu pedido.</p></div></details>
+        <details><summary>¿Qué pasa si un perfume está agotado?</summary><div class="ans"><p>Aparece con la cinta “Agotado” y no se puede agregar al pedido. Escríbenos por WhatsApp para consultar disponibilidad.</p></div></details>
+      </div>
     </section>
   </main>
 
@@ -830,7 +855,7 @@ function buildMessage(st){
   L.push('Pago: ' + (f.pago || '-'), '');
   L.push('Productos:');
   its.forEach((i, n) => L.push((n + 1) + ') ' + i.p.marca + ' ' + i.p.modelo + ' - ' + nameOf(i.p, i.ml) + ' x' + i.q + ' - ' + money(i.total)));
-  gift(its).list.filter(r => r.n).forEach(r => L.push(r.pack.nombre + ': ' + pl(r.n, 'muestra sorpresa', 'muestras sorpresa') + ' de 2 ml (' + (r.pack.cat ? 'perfume ' + CAT_ADJ[r.pack.cat] + ', ' : '') + 'la elige ' + CONFIG.tienda + ')'));
+  gift(its).list.filter(r => r.n).forEach(r => L.push(r.pack.nombre + ': ' + pl(r.n, 'Decant Sorpresa', 'Decants Sorpresa') + ' de 2 ml (' + (r.pack.cat ? 'perfume ' + CAT_ADJ[r.pack.cat] + ', ' : '') + 'la elige ' + CONFIG.tienda + ')'));
   L.push('');
   L.push('Subtotal: ' + money(t.sub));
   if(CONFIG.itbms > 0) L.push('ITBMS (' + Math.round(CONFIG.itbms * 100) + '%): ' + money(t.tax));
@@ -954,7 +979,7 @@ function renderPromoCtx(){
   const ps = state.promoSel;
   if(!ps){ box.hidden = true; box.innerHTML = ''; return; }
   box.hidden = false;
-  box.innerHTML = '<span class="t"><b>Promo ' + ps.min + '+' + ps.gift + ' · ' + esc(ps.label) + '</b>Elige ' + ps.min + ' decants de 10 ml y llévate ' + pl(ps.gift, 'muestra', 'muestras') + ' gratis.</span><button type="button" data-promo-off>Ver todo</button>';
+  box.innerHTML = '<span class="t"><b>Promo ' + ps.min + '+' + ps.gift + ' · ' + esc(ps.label) + '</b>Elige ' + ps.min + ' decants de 10 ml y llévate ' + pl(ps.gift, 'Decant Sorpresa', 'Decants Sorpresa') + ' gratis.</span><button type="button" data-promo-off>Ver todo</button>';
 }
 function renderChips(){
   const tipos = ['Todos', ...new Set(PERFUMES.map(p => p.tipo))];
@@ -1003,12 +1028,12 @@ function renderCart(){
   $('#filled').hidden = empty;
   $('#dfoot').hidden = empty;
   const g = gift(its);
-  const giftLine = g.list.filter(r => r.n).map(r => '<li class="line gift"><p class="ln-name">Muestra sorpresa de 2 ml × ' + r.n + (r.pack.cat ? ' · ' + esc(r.pack.cat) : '') + '</p><p class="ln-total">Gratis</p><p class="ln-size">' + esc(r.pack.nombre) + '. La fragancia la elige ' + CONFIG.tienda + '.</p></li>').join('');
+  const giftLine = g.list.filter(r => r.n).map(r => '<li class="line gift"><p class="ln-name">Decant Sorpresa de 2 ml × ' + r.n + (r.pack.cat ? ' · ' + esc(r.pack.cat) : '') + '</p><p class="ln-total">Gratis</p><p class="ln-size">' + esc(r.pack.nombre) + '. La fragancia la elige ' + CONFIG.tienda + '.</p></li>').join('');
   const nd = $('#nudge');
   const nudges = g.list.filter(r => r.next && its.some(i => i.ml < 100 && (!r.pack.cat || i.p.tipo === r.pack.cat)));
   if(nudges.length){
     nd.hidden = false;
-    nd.innerHTML = nudges.map(r => esc('Agrega ' + pl(r.faltan, 'decant', 'decants') + ' de 10 ml' + (r.pack.cat ? ' ' + CAT_PL[r.pack.cat] : '') + ' más y recibes ' + pl(r.next.muestras, 'muestra sorpresa', 'muestras sorpresa') + ' de 2 ml gratis con ' + r.pack.nombre + '.')).join('<br>');
+    nd.innerHTML = nudges.map(r => esc('Agrega ' + pl(r.faltan, 'decant', 'decants') + ' de 10 ml' + (r.pack.cat ? ' ' + CAT_PL[r.pack.cat] : '') + ' más y recibes ' + pl(r.next.muestras, 'Decant Sorpresa', 'Decants Sorpresa') + ' de 2 ml gratis con ' + r.pack.nombre + '.')).join('<br>');
   } else nd.hidden = true;
   $('#lines').innerHTML = its.map(i => {
     const nm = esc(i.p.marca + ' ' + i.p.modelo);
@@ -1023,7 +1048,7 @@ function renderCart(){
       + '</div></li>';
   }).join('') + giftLine;
   $('#sum').innerHTML = '<div><dt>Subtotal</dt><dd>' + money(t.sub) + '</dd></div>'
-    + g.list.filter(r => r.n).map(r => '<div><dt>' + esc(r.pack.nombre) + '</dt><dd>' + pl(r.n, 'muestra sorpresa', 'muestras sorpresa') + '</dd></div>').join('')
+    + g.list.filter(r => r.n).map(r => '<div><dt>' + esc(r.pack.nombre) + '</dt><dd>' + pl(r.n, 'Decant Sorpresa', 'Decants Sorpresa') + '</dd></div>').join('')
     + (CONFIG.itbms > 0 ? '<div><dt>ITBMS (' + Math.round(CONFIG.itbms * 100) + '%)</dt><dd>' + money(t.tax) + '</dd></div>' : '')
     + '<div><dt>Envío</dt><dd>' + (state.form.entrega === 'Domicilio' ? 'Por confirmar' : 'No aplica') + '</dd></div>';
   $('#tot').textContent = money(t.total);
@@ -1167,6 +1192,17 @@ $('#f-nac').max = hoy(); $('#f-nac').min = '1920-01-01';
 $('#f-fecha').min = hoy();
 $('#preview-banner').hidden = !CONFIG.preciosProvisionales;
 /* ---- Botón flotante, redes y reseñas ---- */
+  (function(){
+    const box = $('#faq-promo'); if(!box || !PACKS.length) return;
+    const dsc = n => pl(n, 'Decant Sorpresa', 'Decants Sorpresa');
+    const frase = niv => niv.map((t, i) => 'con ' + t.min + (i ? ', ' : ' decants de 10 ml recibes ') + dsc(t.muestras)).join('; ');
+    const iguales = PACKS.every(k => JSON.stringify(k.niveles) === JSON.stringify(PACKS[0].niveles));
+    let h = iguales
+      ? '<p>Elige decants de 10 ml de una misma categoría' + (PACKS.length > 1 ? ' (' + PACKS.map(k => k.cat).filter(Boolean).join(' o ') + ')' : '') + ': ' + esc(frase(PACKS[0].niveles)) + '.</p>'
+      : PACKS.map(k => '<p><b>' + esc(k.nombre) + ':</b> ' + esc(frase(k.niveles)) + '.</p>').join('');
+    h += '<p>El Decant Sorpresa es de 2 ml. La fragancia la elige ' + esc(CONFIG.tienda) + ', de la misma categoría de tu pack.</p>';
+    box.innerHTML = h;
+  })();
 $('#fab').href = 'https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURIComponent('Hola, tengo una consulta sobre sus perfumes y decants.');
 (function(){
   const R = (EXTERNO && EXTERNO.redes) || {}, out = [];
@@ -1202,7 +1238,7 @@ if(PACKS.length){
     $('#pk-tabs').innerHTML = PACKS.length > 1 ? PACKS.map((k, i) => '<button type="button" role="tab" class="seg-b' + (i === act ? ' on' : '') + '" aria-selected="' + (i === act) + '" data-i="' + i + '">' + esc(lbl(k)) + '</button>').join('') : '';
     const tiers = [...PACKS[act].niveles].sort((a, b) => a.min - b.min);
     $('#packs').innerHTML = tiers.map((t, i) => '<button type="button" class="eq" data-min="' + t.min + '" data-gift="' + t.muestras + '" style="animation-delay:' + (i * 70) + 'ms">'
-      + '<span class="sr">' + t.min + ' decants de 10 ml y ' + pl(t.muestras, 'muestra gratis', 'muestras gratis') + '. Toca para elegir tus perfumes ' + esc(lbl(PACKS[act]).toLowerCase()) + '</span>'
+      + '<span class="sr">' + t.min + ' decants de 10 ml y ' + pl(t.muestras, 'Decant Sorpresa gratis', 'Decants Sorpresa gratis') + '. Toca para elegir tus perfumes ' + esc(lbl(PACKS[act]).toLowerCase()) + '</span>'
       + '<span class="n a" aria-hidden="true">' + t.min + '</span><span class="p" aria-hidden="true">+</span><span class="n g" aria-hidden="true">' + t.muestras + '</span>'
       + '<span class="mv" aria-hidden="true">' + decs(t.min) + '</span><span aria-hidden="true"></span><span class="s" aria-hidden="true">' + icons(t.muestras) + '</span>'
       + '<span class="gp" aria-hidden="true">+' + t.muestras + ' gratis</span></button>').join('');
