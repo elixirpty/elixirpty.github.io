@@ -1180,7 +1180,7 @@ $('#fab').href = 'https://wa.me/' + CONFIG.whatsapp + '?text=' + encodeURICompon
     'Threads': '<circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/>',
     'Más enlaces': '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>'
   };
-  [['Instagram', url(R.instagram, 'https://www.instagram.com/')], ['TikTok', url(R.tiktok, 'https://www.tiktok.com/@')], ['Threads', url(R.threads, 'https://www.threads.net/@')], ['Más enlaces', url(R.link)]]
+  [['Instagram', url(R.instagram, 'https://www.instagram.com/')], ['TikTok', url(R.tiktok, 'https://www.tiktok.com/@')], ['Threads', url(R.threads, 'https://www.threads.net/@')]]
     .forEach(([t, u]) => { if(u) out.push('<a href="' + esc(u) + '" target="_blank" rel="noopener" aria-label="' + t + '" title="' + t + '">' + (LOGO[t] ? '<i class="lg" aria-hidden="true" style="--m:url(' + LOGO[t] + ')"></i>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + IC[t] + '</svg>') + '</a>'); });
   if(out.length){ $('#social').innerHTML = out.join(''); $('#social').hidden = false; }
   const rs = ((EXTERNO && EXTERNO.resenas) || []).filter(r => r && clean(r.t)).slice(0, 6);
