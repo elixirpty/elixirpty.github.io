@@ -41,7 +41,7 @@ const PERFUMES = CATALOGO.perfumes.map(p => {
   return Object.assign({}, p, { precios: pr, agota: (p.agota || []).filter(k => +k !== 100) });
 }).filter(p => Object.keys(p.precios).length);
 const PROMOS = CATALOGO.promos || [];
-/* Un pack por categoría: cuenta solo los decants de 10 ml de su categoría y la muestra sale de esa misma categoría. */
+/* Combo libre: cuentan todos los decants de 10 ml del pedido, de cualquier categoría. Si algún pack trae categoría, solo cuenta esa. El Decant Sorpresa siempre lo elige la tienda. */
 const PACKS = Array.isArray(CATALOGO.packs) && CATALOGO.packs.length ? CATALOGO.packs
   : (PROMOS.length ? [{ id:'general', cat:null, nombre:'Promo Elixir Packs', niveles:PROMOS }] : []);
 const CAT_ADJ = { 'Árabe':'árabe', 'Diseñador':'de diseñador', 'Nicho':'de nicho' };
@@ -460,7 +460,7 @@ function cardHTML(p){
     +   '<p class="meta"><span class="tag ' + (tone === 'a' ? 'arabe' : 'dis') + '">' + esc(p.tipo) + '</span><span>' + esc(p.conc) + ' · ' + esc(p.genero) + '</span></p>'
     +   '<p class="incart" data-incart></p>'
     + '</div>'
-    + '<fieldset class="sizes"><legend class="sr">Tamaño de ' + esc(p.marca + ' ' + p.modelo) + '</legend>' + opts + '</fieldset>'
+    + '<fieldset class="sizes" style="--n:' + Math.max(1, SIZES.filter(s => p.precios[s] != null).length) + '"><legend class="sr">Tamaño de ' + esc(p.marca + ' ' + p.modelo) + '</legend>' + opts + '</fieldset>'
     + (out ? '<button class="add" type="button" disabled><span>Agotado</span></button>'
            : '<button class="add" type="button" data-add><span data-add-t>Agregar al pedido</span><span class="pr" data-add-p>' + money(p.precios[ml]) + '</span></button>')
     + avisoHTML(p)
@@ -497,7 +497,7 @@ function renderPromoCtx(){
   const ps = state.promoSel;
   if(!ps){ box.hidden = true; box.innerHTML = ''; return; }
   box.hidden = false;
-  box.innerHTML = '<span class="t"><b>Promo ' + ps.min + '+' + ps.gift + ' · ' + esc(ps.label) + '</b>Elige ' + ps.min + ' decants de 10 ml y recibe ' + pl(ps.gift, 'Decant Sorpresa', 'Decants Sorpresa') + ' gratis.</span><button type="button" data-promo-off>Ver todo</button>';
+  box.innerHTML = '<span class="t"><b>Promo ' + ps.min + '+' + ps.gift + ' · ' + esc(ps.label) + '</b>Elige ' + ps.min + ' decants de 10 ml' + (ps.libre ? ' de cualquier categoría' : '') + ' y recibe ' + pl(ps.gift, 'Decant Sorpresa', 'Decants Sorpresa') + ' gratis.</span><button type="button" data-promo-off>Ver todo</button>';
 }
 function renderChips(){
   const hay = (tipo, gen) => PERFUMES.some(p => pasa(p, tipo, gen));
@@ -698,9 +698,9 @@ $('#preview-banner').hidden = !CONFIG.preciosProvisionales;
     const frase = niv => niv.map((t, i) => 'con ' + t.min + (i ? ', ' : ' decants de 10 ml recibes ') + dsc(t.muestras)).join('; ');
     const iguales = PACKS.every(k => JSON.stringify(k.niveles) === JSON.stringify(PACKS[0].niveles));
     let h = iguales
-      ? '<p>Elige decants de 10 ml de una misma categoría' + (PACKS.length > 1 ? ' (' + PACKS.map(k => k.cat).filter(Boolean).join(' o ') + ')' : '') + ': ' + esc(frase(PACKS[0].niveles)) + '.</p>'
+      ? '<p>Arma tu combo con los decants de 10 ml que prefieras, de cualquier categoría: ' + esc(frase(PACKS[0].niveles)) + '.</p>'
       : PACKS.map(k => '<p><b>' + esc(k.nombre) + ':</b> ' + esc(frase(k.niveles)) + '.</p>').join('');
-    h += '<p>El Decant Sorpresa es de 2 ml. La fragancia la elige ' + esc(CONFIG.tienda) + ', de la misma categoría de tu pack.</p>';
+    h += '<p>El Decant Sorpresa es de 2 ml y siempre lo elige ' + esc(CONFIG.tienda) + '.</p>';
     box.innerHTML = h;
   })();
 
@@ -737,7 +737,7 @@ $('#sm-wa').href = waUrl('Hola, tengo una consulta sobre sus perfumes y decants.
 document.querySelectorAll('a[data-wa]').forEach(a => { a.href = waUrl(a.dataset.wa); });
 document.querySelectorAll('.pays').forEach(ul => { ul.innerHTML = CONFIG.pagos.map(x => '<li>' + esc(x) + '</li>').join(''); });
 const PACK_LBL = { 'Árabe':'Árabes', 'Diseñador':'Diseñadores', 'Nicho':'Nicho' };
-const packLbl = k => k.cat ? (PACK_LBL[k.cat] || k.cat) : k.nombre;
+const packLbl = k => k.cat ? (PACK_LBL[k.cat] || k.cat) : 'Combo libre';
 const calm = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 syncForm(); renderCart();
 
@@ -793,7 +793,7 @@ if($('#packs')){
       $('#pk-tabs').innerHTML = PACKS.length > 1 ? PACKS.map((k, i) => '<button type="button" role="tab" class="seg-b' + (i === act ? ' on' : '') + '" aria-selected="' + (i === act) + '" data-i="' + i + '">' + esc(packLbl(k)) + '</button>').join('') : '';
       const tiers = [...PACKS[act].niveles].sort((a, b) => a.min - b.min);
       $('#packs').innerHTML = tiers.map((t, i) => '<button type="button" class="eq" data-min="' + t.min + '" data-gift="' + t.muestras + '" style="animation-delay:' + (i * 70) + 'ms">'
-        + '<span class="sr">' + t.min + ' decants de 10 ml y ' + pl(t.muestras, 'Decant Sorpresa gratis', 'Decants Sorpresa gratis') + '. Selecciona este pack para elegir tus perfumes ' + esc(packLbl(PACKS[act]).toLowerCase()) + '</span>'
+        + '<span class="sr">' + t.min + ' decants de 10 ml y ' + pl(t.muestras, 'Decant Sorpresa gratis', 'Decants Sorpresa gratis') + '. Selecciona este pack para armar tu combo' + (PACKS[act].cat ? ' ' + esc(packLbl(PACKS[act]).toLowerCase()) : ' con los perfumes que prefieras') + '</span>'
         + '<span class="n a" aria-hidden="true">' + t.min + '</span><span class="p" aria-hidden="true">+</span><span class="n g" aria-hidden="true">' + t.muestras + '</span>'
         + '<span class="mv" aria-hidden="true">' + decs(t.min) + '</span><span aria-hidden="true"></span><span class="s" aria-hidden="true">' + icons(t.muestras) + '</span>'
         + '<span class="gp" aria-hidden="true">+' + t.muestras + ' gratis</span></button>').join('');
@@ -821,7 +821,7 @@ if($('#grid')){
     const c = CATS.find(x => x.slug === u.get('c')), g = GENS.find(x => x.slug === u.get('g'));
     state.tipo = c ? c.id : 'Todos'; state.gen = g ? g.id : 'Todos'; state.q = (u.get('q') || '').slice(0, 80);
     const m = /^(\d+)-(\d+)$/.exec(u.get('promo') || ''), k = PACKS.find(x => x.id === u.get('pk')) || PACKS[0];
-    state.promoSel = m && k ? { min:+m[1], gift:+m[2], label:packLbl(k), pk:k.id } : null;
+    state.promoSel = m && k ? { min:+m[1], gift:+m[2], label:packLbl(k), pk:k.id, libre:!k.cat } : null;
     $('#q').value = state.q;
   };
   const guardarUrl = () => {

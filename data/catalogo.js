@@ -1,5 +1,5 @@
 window.ELIXIR_CATALOGO = {
-"actualizado": "2026-11-18T00:06:00.000Z",
+"actualizado": "2026-11-18T02:16:00.000Z",
 "whatsapp": "50762003794",
 "itbms": 0,
 "preciosProvisionales": true,
@@ -15,7 +15,6 @@ window.ELIXIR_CATALOGO = {
 {"id":"PF-007","sku":"ELX-ARF-001","marca":"Armaf","modelo":"Odyssey MandarinSky","conc":"Elixir","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":3,"10":5.5},"agota":[5,10,100]}
 ],
 "packs": [
-{"id":"arabe","cat":"\u00c1rabe","nombre":"Promo Elixir Pack - \u00c1rabes","niveles":[{"min":3,"muestras":1},{"min":5,"muestras":2},{"min":7,"muestras":3}]},
-{"id":"diseno","cat":"Dise\u00f1ador","nombre":"Promo Elixir Pack - Dise\u00f1adores","niveles":[{"min":3,"muestras":1},{"min":5,"muestras":2},{"min":7,"muestras":3}]}
+{"id":"combo","cat":null,"nombre":"Promo Elixir Packs","niveles":[{"min":3,"muestras":1},{"min":5,"muestras":2},{"min":7,"muestras":3}]}
 ]
 };
