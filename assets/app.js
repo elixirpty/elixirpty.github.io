@@ -241,6 +241,7 @@ const SHELL = {
 <header class="top">
     <div class="wrap">
       <div class="top-l">
+        <a class="menubtn backbtn" id="back" href="index.html" aria-label="Volver a la página anterior" title="Volver" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
         <button class="menubtn" id="open-menu" type="button" aria-haspopup="dialog" aria-controls="menu" aria-label="Abrir menú"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
       <a class="brand" href="index.html" aria-label="ELIXIR Decants y Parfums, inicio"><img src="img/logo-redondo.jpg" alt="ELIXIR Decants &amp; Parfums" width="52" height="52"></a>
       </div>
@@ -747,6 +748,41 @@ document.querySelectorAll('[data-col]').forEach(t => {
 });
 { const hp = $('#home-promo'); if(hp) hp.hidden = !PACKS.length; }
 
+/* ---- Inicio: perfumes del mes (se eligen en el panel; hasta 3) ---- */
+const CAT_ICON = {"arabes": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M12 1.8c.9.9 1.6 1.7 1.6 2.8h-3.2c0-1.1.7-1.9 1.6-2.8z\"/><path d=\"M10.6 4.6v1.6h2.8V4.6\"/><path d=\"M9.6 6.2h4.8\"/><path d=\"M9.6 6.2C6.9 7.5 5.2 10 5.2 13.6c0 3.9 2.7 7 6.8 7s6.8-3.1 6.8-7c0-3.6-1.7-6.1-4.4-7.4\"/><path d=\"M5.6 12.6h12.8\"/><path d=\"M12 14.1l1.1 1.4-1.1 1.4-1.1-1.4z\"/></svg>", "disenadores": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><rect x=\"9.2\" y=\"1.9\" width=\"5.6\" height=\"3.6\" rx=\".8\"/><path d=\"M10.6 5.5v1.7M13.4 5.5v1.7\"/><rect x=\"5.5\" y=\"7.2\" width=\"13\" height=\"14\" rx=\"2.2\"/><rect x=\"8.8\" y=\"11.4\" width=\"6.4\" height=\"5\" rx=\".7\"/><path d=\"M10.2 13.9h3.6\"/></svg>", "nicho": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\" aria-hidden=\"true\" focusable=\"false\"><path d=\"M12 1.8l2.3 2.3L12 6.4 9.7 4.1z\"/><path d=\"M12 6.4v1.3\"/><path d=\"M10.4 7.7h3.2\"/><circle cx=\"12\" cy=\"14.6\" r=\"6.2\"/><path d=\"M12 11.1c.2 1.7.9 2.4 2.6 2.6-1.7.2-2.4.9-2.6 2.6-.2-1.7-.9-2.4-2.6-2.6 1.7-.2 2.4-.9 2.6-2.6z\"/><path d=\"M15.9 16.6l.5.9.9.5-.9.5-.5.9-.5-.9-.9-.5.9-.5z\" stroke-width=\"1.1\"/></svg>"};
+{
+  const box = $('#mes-grid');
+  if(box){
+    const mes = PERFUMES.filter(p => p.mes).slice(0, 3);
+    $('#mes').hidden = !mes.length;
+    box.innerHTML = mes.map(p => {
+      const c = CATS.find(x => x.id === p.tipo), out = allOut(p), tone = p.tipo === 'Árabe' ? 'a' : 'd';
+      const desde = Math.min.apply(null, Object.keys(p.precios).map(k => p.precios[k]));
+      const href = 'catalogo.html?' + (c ? 'c=' + c.slug + '&' : '') + 'q=' + encodeURIComponent(p.modelo);
+      return '<a class="mes-card' + (out ? ' out' : '') + '" href="' + href + '" aria-label="' + esc(p.marca + ' ' + p.modelo) + '">'
+        + '<span class="ph">' + (p.foto ? '<img src="' + esc(p.foto) + '" alt="' + esc(p.marca + ' ' + p.modelo) + '" loading="lazy" decoding="async">' : vial(10, tone)) + '</span>'
+        + (out ? '<span class="so">SOLD OUT</span>' : '')
+        + '<span class="tx"><span class="m1">' + esc(p.marca) + '</span><span class="m2">' + esc(p.modelo) + '</span>'
+        + '<span class="m3">' + (out ? 'Agotado' : 'Desde <b>' + money(desde) + '</b>') + '</span></span></a>';
+    }).join('');
+  }
+}
+
+/* ---- Botón de atrás (todas las páginas menos Inicio) ---- */
+{
+  const bk = $('#back');
+  if(bk){
+    bk.hidden = PAGE === 'inicio';
+    bk.addEventListener('click', e => {
+      let mismo = false;
+      try { mismo = !!document.referrer && new URL(document.referrer).origin === location.origin; } catch(_){ mismo = false; }
+      if(mismo && history.length > 1){ e.preventDefault(); history.back(); }   /* si no, el enlace lleva al Inicio */
+    });
+  }
+  /* al volver con "atrás" el navegador puede mostrar la página tal como quedó: se recarga para ver el pedido al día */
+  window.addEventListener('pageshow', e => { if(e.persisted) location.reload(); });
+}
+
 /* ---- Promo: packs ---- */
 if($('#packs')){
   if(PACKS.length){
@@ -838,7 +874,7 @@ if($('#grid')){
   $('#sm-promo').hidden = !PACKS.length;
   $('#sm-cats').innerHTML = CATS.map(c => {
     const hay = PERFUMES.some(p => p.tipo === c.id);
-    return '<div class="sm-grp"><a href="catalogo.html?c=' + c.slug + '">' + esc(c.full) + (hay ? '' : '<small>Próximamente</small>') + '</a>'
+    return '<div class="sm-grp"><a href="catalogo.html?c=' + c.slug + '"><i class="ci">' + CAT_ICON[c.slug] + '</i>' + esc(c.full) + (hay ? '' : '<small>Próximamente</small>') + '</a>'
       + '<div class="sm-gens">' + GENS.map(g => '<a href="catalogo.html?c=' + c.slug + '&amp;g=' + g.slug + '"' + (PERFUMES.some(p => pasa(p, c.id, g.id)) ? '' : ' class="soon"') + '>' + esc(g.nombre) + '</a>').join('') + '</div></div>';
   }).join('');
   const aqui = location.pathname.split('/').pop() || 'index.html';
