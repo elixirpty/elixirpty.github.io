@@ -172,8 +172,6 @@ function buildMessage(st){
   const ev = envioDe(st);
   if(ev.tipo === 'zona') L.push('Sector: ' + ev.sector);
   else if(ev.tipo === 'otro') L.push('Sector: otro sector de la ciudad (por cotizar)');
-  L.push('Fecha deseada: ' + (fmtFecha(f.fecha) || '-'));
-  L.push('Hora deseada: ' + fmtHora(f.hora));
   L.push('Pago: ' + (f.pago || '-'), '');
   L.push('Productos:');
   its.forEach((i, n) => L.push((n + 1) + ') ' + i.p.marca + ' ' + i.p.modelo + ' - ' + nameOf(i.p, i.ml) + ' x' + i.q + ' - ' + money(i.total) + (i.p.sku ? ' (Cód. ' + i.p.sku + ')' : '')));
@@ -195,8 +193,6 @@ function validate(st){
   if(f.nac && (f.nac > hoy() || f.nac < '1920-01-01')) e.push(['f-nac', 'Revisa tu fecha de nacimiento.', 'fecha de nacimiento']);
   if(f.correo.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.correo.trim())) e.push(['f-correo', 'Revisa tu correo.', 'correo']);
   if(pideSector(st) && f.sector !== SECTOR_OTRO && !zonaDeSector(f.sector)) e.push(['f-sector', 'Elige tu sector para calcular el envío.', 'sector de entrega']);
-  if(!f.fecha) e.push(['f-fecha', 'Elige tu fecha preferida.', 'fecha preferida']);
-  else if(f.fecha < hoy()) e.push(['f-fecha', 'Esa fecha ya pasó. Elige hoy o una fecha posterior.', 'fecha preferida (ya pasó)']);
   if(!f.pago) e.push(['f-pago', 'Elige tu método de pago.', 'método de pago']);
   return e;
 }
@@ -238,12 +234,11 @@ const FUENTES = ['Instagram', 'Facebook', 'TikTok', 'Página web', 'WhatsApp', '
 const F_REC = 'Recomendación de un amigo';   // las 10 provincias de Panamá
 const state = {
   cart: LS.get('elx_cart') || {},
-  form: Object.assign({ nombre:'', apellido:'', nac:'', correo:'', prov:'Panamá', sector:'', fuente:'', referido:'', entrega:'Domicilio', fecha:'', hora:'', pago:'', notas:'' }, LS.get('elx_form') || {}),
+  form: Object.assign({ nombre:'', apellido:'', nac:'', correo:'', prov:'Panamá', sector:'', fuente:'', referido:'', entrega:'Domicilio', pago:'', notas:'' }, LS.get('elx_form') || {}),
   code: LS.get('elx_code') || newCode(),
   sel: {}, tipo: 'Todos', gen: 'Todos', q: '', promoSel: null
 };
 state.cart = Object.fromEntries(Object.entries(state.cart).filter(([k, q]) => cartItems({ [k]:q }).length));
-if(state.form.fecha && state.form.fecha < hoy()) state.form.fecha = '';
 LS.set('elx_code', state.code);
 
 let opener = null;
@@ -399,17 +394,6 @@ const SHELL = {
         <p class="hint" id="dom-note">Te confirmamos la dirección y el envío por WhatsApp.</p>
         <p class="hint" id="ret-note" hidden>Te confirmamos el punto de retiro por WhatsApp.</p>
 
-        <div class="row2">
-          <div class="field">
-            <label for="f-fecha">Fecha preferida</label>
-            <input id="f-fecha" type="date">
-          </div>
-          <div class="field">
-            <label for="f-hora">Hora</label>
-            <input id="f-hora" type="time">
-          </div>
-        </div>
-        <p class="hint" style="margin:-6px 0 14px">La fecha y la hora son una preferencia; las confirmamos contigo por WhatsApp.</p>
 
         <div class="field">
           <label for="f-pago">Método de pago</label>
@@ -426,7 +410,7 @@ const SHELL = {
         <summary>Ver el mensaje que se enviará</summary>
         <textarea id="preview" rows="14" readonly aria-label="Mensaje del pedido"></textarea>
       </details>
-      <p class="fine2">Al enviar, se abre WhatsApp con tu pedido listo. Por ese medio te confirmamos el total final, la entrega y el pago.</p>
+      <p class="fine2">Al enviar su pedido por WhatsApp estaremos confirmando la disponibilidad y entrega de sus decants de ELIXIR.</p>
       <p class="fine2">Al enviar tu pedido aceptas los <a href="terminos.html" target="_blank" rel="noopener">Términos y condiciones</a>.</p>
     </div>
   </div>
@@ -624,7 +608,7 @@ function updateSend(){
   const dom = state.form.entrega === 'Domicilio', ev = envioDe(state);
   $('#sector-box').hidden = !pideSector(state);
   $('#dom-note').hidden = !dom;
-  $('#dom-note').textContent = ev.tipo === 'zona' ? 'Envío ' + ev.zona.nombre + ': ' + envioTxt(ev.monto) + '. Te confirmamos la dirección y la hora por WhatsApp.'
+  $('#dom-note').textContent = ev.tipo === 'zona' ? 'Envío ' + ev.zona.nombre + ': ' + envioTxt(ev.monto) + '. Te confirmamos la dirección, la fecha y la hora por WhatsApp.'
     : ev.tipo === 'otro' ? 'Te cotizamos el envío de tu sector por WhatsApp. Allí también confirmamos la dirección.'
     : pideSector(state) ? 'Elige tu sector para ver el envío. La dirección te la confirmamos por WhatsApp.'
     : 'El envío fuera de la ciudad de Panamá se cotiza. Te confirmamos la dirección y el costo por WhatsApp.';
@@ -633,8 +617,8 @@ function updateSend(){
 }
 function syncForm(){
   const f = state.form;
-  $('#f-nombre').value = f.nombre; $('#f-apellido').value = f.apellido; $('#f-nac').value = f.nac; $('#f-correo').value = f.correo; if(!PROVINCIAS.includes(f.prov)) f.prov = 'Panamá'; $('#f-prov').value = f.prov; if(f.sector !== SECTOR_OTRO && !zonaDeSector(f.sector)) f.sector = ''; $('#f-sector').value = f.sector; $('#f-fuente').value = f.fuente || ''; $('#f-referido').value = f.referido; $('#ref-box').hidden = f.fuente !== F_REC; $('#f-fecha').value = f.fecha;
-  $('#f-hora').value = f.hora; $('#f-pago').value = f.pago; $('#f-notas').value = f.notas;
+  $('#f-nombre').value = f.nombre; $('#f-apellido').value = f.apellido; $('#f-nac').value = f.nac; $('#f-correo').value = f.correo; if(!PROVINCIAS.includes(f.prov)) f.prov = 'Panamá'; $('#f-prov').value = f.prov; if(f.sector !== SECTOR_OTRO && !zonaDeSector(f.sector)) f.sector = ''; $('#f-sector').value = f.sector; $('#f-fuente').value = f.fuente || ''; $('#f-referido').value = f.referido; $('#ref-box').hidden = f.fuente !== F_REC;
+  $('#f-pago').value = f.pago; $('#f-notas').value = f.notas;
   $('#e-dom').checked = f.entrega === 'Domicilio'; $('#e-ret').checked = f.entrega === 'Retiro';
 }
 function showErrors(errs){
@@ -689,7 +673,7 @@ $('#lines').addEventListener('click', e => {
   saveCart(); renderCart();
 });
 
-const FIELDS = { 'f-nombre':'nombre', 'f-apellido':'apellido', 'f-nac':'nac', 'f-correo':'correo', 'f-prov':'prov', 'f-sector':'sector', 'f-fuente':'fuente', 'f-referido':'referido', 'f-fecha':'fecha', 'f-hora':'hora', 'f-pago':'pago', 'f-notas':'notas' };
+const FIELDS = { 'f-nombre':'nombre', 'f-apellido':'apellido', 'f-nac':'nac', 'f-correo':'correo', 'f-prov':'prov', 'f-sector':'sector', 'f-fuente':'fuente', 'f-referido':'referido', 'f-pago':'pago', 'f-notas':'notas' };
 $('#form').addEventListener('input', e => {
   const k = FIELDS[e.target.id];
   if(k){ state.form[k] = e.target.value; e.target.classList.remove('bad'); }
@@ -722,7 +706,7 @@ $('#copy').addEventListener('click', async () => {
 });
 $('#new-order').addEventListener('click', () => {
   state.cart = {}; state.code = newCode();
-  state.form.fecha = ''; state.form.hora = ''; state.form.notas = '';
+  state.form.notas = '';
   LS.set('elx_code', state.code); saveCart(); saveForm();
   $('#sent').hidden = true; syncForm(); renderCart(); closeCart();
 });
@@ -736,7 +720,6 @@ $('#f-sector').innerHTML = '<option value="">Elige tu sector</option>'
   + '<option value="' + SECTOR_OTRO + '">Otro sector (te cotizamos el envío)</option>';
 $('#f-fuente').innerHTML = '<option value="">Elige una opción</option>' + FUENTES.map(p => '<option>' + esc(p) + '</option>').join('');
 $('#f-nac').max = hoy(); $('#f-nac').min = '1920-01-01';
-$('#f-fecha').min = hoy();
 $('#preview-banner').hidden = !CONFIG.preciosProvisionales;
 
 /* ---- FAQ, redes y reseñas ---- */
