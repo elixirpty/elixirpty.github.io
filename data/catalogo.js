@@ -1,5 +1,5 @@
 window.ELIXIR_CATALOGO = {
-"actualizado": "2026-11-17T02:49:01.000Z",
+"actualizado": "2026-11-18T00:06:00.000Z",
 "whatsapp": "50762003794",
 "itbms": 0,
 "preciosProvisionales": true,
