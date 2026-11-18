@@ -603,3 +603,11 @@ a.frasco:hover span{color:var(--ink)}
 .sm-nav .ci{display:grid;place-items:center;flex:none}
 .sm-nav .sm-sub .sm-grp>a{gap:10px}
 .sm-nav .sm-sub .sm-grp>a small{margin-left:auto;white-space:nowrap;font-size:9.5px;letter-spacing:.09em}
+/* Zonas de envío */
+.zonas{display:grid;gap:10px;margin:8px 0 12px}
+.zona{border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,#14110d,#0b0a08);padding:13px 15px}
+.zona-h{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}
+.prose .zona h3{margin:0;font:600 14px var(--display);letter-spacing:.1em;text-transform:uppercase;color:var(--ink)}
+.zona-p{padding:4px 12px;border:1px solid var(--glass-line);border-radius:999px;color:var(--gold-hi);font:600 14px var(--body)}
+.prose .zona p{margin:0;font-size:14px;line-height:1.55}
+@media (min-width:760px){.zonas{grid-template-columns:repeat(3,minmax(0,1fr))}}

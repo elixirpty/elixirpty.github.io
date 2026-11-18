@@ -21,7 +21,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700&family=Jost:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="assets/app.css?v=9">
+<link rel="stylesheet" href="assets/app.css?v=10">
 </head>
 <body data-page="entregas">
 <noscript><p style="padding:24px">Activa JavaScript para ver el catálogo y armar tu pedido. Páginas: <a href="index.html">Inicio</a> · <a href="catalogo.html">Catálogo</a> · <a href="promo.html">Promo</a> · <a href="quienes-somos.html">Quiénes somos</a> · <a href="entregas.html">Entregas y pagos</a> · <a href="preguntas-frecuentes.html">Preguntas</a></p></noscript>
@@ -34,7 +34,14 @@
     <section class="wrap prose">
       <h2>Entrega</h2>
       <p>Atendemos las 10 provincias de Panamá. Al hacer tu pedido eliges entrega a domicilio o retiro, y la fecha y la hora que prefieres.</p>
-      <p>La dirección o el punto de retiro, el costo del envío y la hora final te los confirmamos por WhatsApp. El total que ves en la página no incluye el envío.</p>
+      <p>La dirección o el punto de retiro y la hora final te los confirmamos por WhatsApp.</p>
+      <div id="zonas-wrap">
+        <h2>Envío en la ciudad de Panamá</h2>
+        <p>Tarifa fija según tu sector. La eliges al hacer el pedido y se suma al total.</p>
+        <div class="zonas" id="zonas"></div>
+        <p>¿Tu sector no aparece? Elige «Otro sector» en el pedido y te cotizamos por WhatsApp.</p>
+      </div>
+      <p>Fuera de la ciudad (Panamá Oeste, Colón y el interior) el envío se cotiza contigo por WhatsApp. El retiro no tiene costo de envío.</p>
       <h2>Pagos</h2>
       <p>Todos los precios están en dólares. Puedes pagar con:</p>
       <ul class="pays"></ul>
@@ -49,7 +56,7 @@
     </section>
   </main>
 </div>
-<script src="data/catalogo.js?v=20261118021600"></script>
-<script src="assets/app.js?v=9"></script>
+<script src="data/catalogo.js?v=20261118035709"></script>
+<script src="assets/app.js?v=10"></script>
 </body>
 </html>

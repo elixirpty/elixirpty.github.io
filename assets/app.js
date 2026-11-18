@@ -35,6 +35,19 @@ const CONFIG = {
   preciosProvisionales: !!CATALOGO.preciosProvisionales,
   pagos: ['Yappy', 'Transferencia bancaria', 'Efectivo']
 };
+/* Envío en la ciudad de Panamá: tarifa fija por zona. Las zonas se editan en el panel y llegan en data/catalogo.js ("envio"); estas son las de respaldo. */
+const ZONAS_BASE = [
+  { id:'z1', nombre:'Zona 1 · Centro', tarifa:3, sectores:['Bella Vista', 'Obarrio', 'El Cangrejo', 'Marbella', 'San Francisco', 'Punta Pacífica', 'Paitilla', 'Calidonia', 'Casco Antiguo'] },
+  { id:'z2', nombre:'Zona 2 · Cercana', tarifa:4, sectores:['Betania', 'Pueblo Nuevo', 'Río Abajo', 'Albrook', 'Clayton', 'Ancón', 'Costa del Este', 'Juan Díaz', 'Pedregal'] },
+  { id:'z3', nombre:'Zona 3 · Alejada', tarifa:5, sectores:['San Miguelito', 'Tocumen', '24 de Diciembre', 'Las Cumbres', 'Chilibre', 'Pacora'] }
+];
+const ZONAS = (CATALOGO.envio && Array.isArray(CATALOGO.envio.zonas) ? CATALOGO.envio.zonas : ZONAS_BASE).map(z => ({
+  id: String(z.id || ''),
+  nombre: String(z.nombre || '').trim(),
+  tarifa: Number(z.tarifa),
+  sectores: (Array.isArray(z.sectores) ? z.sectores : []).map(x => String(x).trim()).filter(Boolean)
+})).filter(z => z.nombre && isFinite(z.tarifa) && z.tarifa >= 0 && z.sectores.length);
+const SECTOR_OTRO = '__otro';
 /* El frasco completo no se publica: se consulta por WhatsApp. Solo se muestran decants de 5 y 10 ml. */
 const PERFUMES = CATALOGO.perfumes.map(p => {
   const pr = {}; [5, 10].forEach(k => { if(p.precios && p.precios[k] != null) pr[k] = p.precios[k]; });
@@ -125,7 +138,25 @@ function gift(its){
   return { list, n: list.reduce((t, r) => t + r.n, 0) };
 }
 const pl = (n, a, b) => n + ' ' + (n === 1 ? a : b);
-function totalLabel(st){ return st.form.entrega === 'Domicilio' ? 'Total (sin envío)' : 'Total'; }
+function zonaDeSector(sec){
+  for(const z of ZONAS){ const s = z.sectores.find(x => x === sec); if(s) return { zona:z, sector:s }; }
+  return null;
+}
+const pideSector = st => st.form.entrega === 'Domicilio' && st.form.prov === 'Panamá' && ZONAS.length > 0;
+/* tipo: retiro (sin envío) · zona (tarifa fija) · otro (sector fuera de la lista, se cotiza) · cotizar (fuera de la ciudad, se cotiza) */
+function envioDe(st){
+  const f = st.form;
+  if(f.entrega !== 'Domicilio') return { tipo:'retiro', monto:0 };
+  if(pideSector(st)){
+    if(f.sector === SECTOR_OTRO) return { tipo:'otro', monto:null };
+    const z = zonaDeSector(f.sector);
+    if(z) return { tipo:'zona', monto:z.zona.tarifa, zona:z.zona, sector:z.sector };
+  }
+  return { tipo:'cotizar', monto:null };
+}
+const envioTxt = m => m > 0 ? money(m) : 'Gratis';
+function totalFinal(st){ const e = envioDe(st); return r2(totals(cartItems(st.cart)).total + (e.tipo === 'zona' ? e.monto : 0)); }
+function totalLabel(st){ const e = envioDe(st); return e.tipo === 'retiro' || e.tipo === 'zona' ? 'Total' : 'Total (sin envío)'; }
 function buildMessage(st){
   const its = cartItems(st.cart), t = totals(its), f = st.form, L = [];
   L.push('Hola, quiero hacer este pedido en ' + CONFIG.tienda + '.', '');
@@ -138,6 +169,9 @@ function buildMessage(st){
   if(f.fuente) L.push('Cómo nos conoció: ' + f.fuente);
   if(f.fuente === F_REC && f.referido.trim()) L.push('Referido por: ' + f.referido.trim());
   L.push('Entrega: ' + f.entrega);
+  const ev = envioDe(st);
+  if(ev.tipo === 'zona') L.push('Sector: ' + ev.sector);
+  else if(ev.tipo === 'otro') L.push('Sector: otro sector de la ciudad (por cotizar)');
   L.push('Fecha deseada: ' + (fmtFecha(f.fecha) || '-'));
   L.push('Hora deseada: ' + fmtHora(f.hora));
   L.push('Pago: ' + (f.pago || '-'), '');
@@ -147,8 +181,8 @@ function buildMessage(st){
   L.push('');
   L.push('Subtotal: ' + money(t.sub));
   if(CONFIG.itbms > 0) L.push('ITBMS (' + Math.round(CONFIG.itbms * 100) + '%): ' + money(t.tax));
-  L.push('Envío: ' + (f.entrega === 'Domicilio' ? 'por confirmar' : 'no aplica (retiro)'));
-  L.push(totalLabel(st) + ': ' + money(t.total));
+  L.push('Envío: ' + (ev.tipo === 'retiro' ? 'no aplica (retiro)' : ev.tipo === 'zona' ? (ev.monto > 0 ? money(ev.monto) : 'gratis') + ' (' + ev.zona.nombre + ')' : 'por confirmar'));
+  L.push(totalLabel(st) + ': ' + money(totalFinal(st)));
   if(f.notas.trim()) L.push('', 'Notas: ' + f.notas.trim().replace(/\s*\n\s*/g, ' '));
   return L.join('\n');
 }
@@ -160,6 +194,7 @@ function validate(st){
   if(!f.apellido.trim()) e.push(['f-apellido', 'Escribe tu apellido.', 'apellido']);
   if(f.nac && (f.nac > hoy() || f.nac < '1920-01-01')) e.push(['f-nac', 'Revisa tu fecha de nacimiento.', 'fecha de nacimiento']);
   if(f.correo.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.correo.trim())) e.push(['f-correo', 'Revisa tu correo.', 'correo']);
+  if(pideSector(st) && f.sector !== SECTOR_OTRO && !zonaDeSector(f.sector)) e.push(['f-sector', 'Elige tu sector para calcular el envío.', 'sector de entrega']);
   if(!f.fecha) e.push(['f-fecha', 'Elige tu fecha preferida.', 'fecha preferida']);
   else if(f.fecha < hoy()) e.push(['f-fecha', 'Esa fecha ya pasó. Elige hoy o una fecha posterior.', 'fecha preferida (ya pasó)']);
   if(!f.pago) e.push(['f-pago', 'Elige tu método de pago.', 'método de pago']);
@@ -203,7 +238,7 @@ const FUENTES = ['Instagram', 'Facebook', 'TikTok', 'Página web', 'WhatsApp', '
 const F_REC = 'Recomendación de un amigo';   // las 10 provincias de Panamá
 const state = {
   cart: LS.get('elx_cart') || {},
-  form: Object.assign({ nombre:'', apellido:'', nac:'', correo:'', prov:'Panamá', fuente:'', referido:'', entrega:'Domicilio', fecha:'', hora:'', pago:'', notas:'' }, LS.get('elx_form') || {}),
+  form: Object.assign({ nombre:'', apellido:'', nac:'', correo:'', prov:'Panamá', sector:'', fuente:'', referido:'', entrega:'Domicilio', fecha:'', hora:'', pago:'', notas:'' }, LS.get('elx_form') || {}),
   code: LS.get('elx_code') || newCode(),
   sel: {}, tipo: 'Todos', gen: 'Todos', q: '', promoSel: null
 };
@@ -357,6 +392,10 @@ const SHELL = {
           </div>
         </fieldset>
 
+        <div class="field" id="sector-box" hidden>
+          <label for="f-sector">Sector de entrega</label>
+          <select id="f-sector"></select>
+        </div>
         <p class="hint" id="dom-note">Te confirmamos la dirección y el envío por WhatsApp.</p>
         <p class="hint" id="ret-note" hidden>Te confirmamos el punto de retiro por WhatsApp.</p>
 
@@ -572,8 +611,8 @@ function renderCart(){
   $('#sum').innerHTML = '<div><dt>Subtotal</dt><dd>' + money(t.sub) + '</dd></div>'
     + g.list.filter(r => r.n).map(r => '<div><dt>' + esc(r.pack.nombre) + '</dt><dd>' + pl(r.n, 'Decant Sorpresa', 'Decants Sorpresa') + '</dd></div>').join('')
     + (CONFIG.itbms > 0 ? '<div><dt>ITBMS (' + Math.round(CONFIG.itbms * 100) + '%)</dt><dd>' + money(t.tax) + '</dd></div>' : '')
-    + '<div><dt>Envío</dt><dd>' + (state.form.entrega === 'Domicilio' ? 'Por confirmar' : 'No aplica') + '</dd></div>';
-  $('#tot').textContent = money(t.total);
+    + (function(){ const ev = envioDe(state); return '<div><dt>Envío' + (ev.tipo === 'zona' ? ' · ' + esc(ev.zona.nombre) : '') + '</dt><dd>' + (ev.tipo === 'retiro' ? 'No aplica' : ev.tipo === 'zona' ? envioTxt(ev.monto) : 'Por confirmar') + '</dd></div>'; })();
+  $('#tot').textContent = money(totalFinal(state));
   $('#tot-label').textContent = totalLabel(state);
   updateSend();
   updateBadges();
@@ -582,13 +621,19 @@ function updateSend(){
   const msg = buildMessage(state);
   $('#send').href = waLink(msg);
   $('#preview').value = msg;
-  $('#dom-note').hidden = state.form.entrega !== 'Domicilio';
-  $('#ret-note').hidden = state.form.entrega === 'Domicilio';
+  const dom = state.form.entrega === 'Domicilio', ev = envioDe(state);
+  $('#sector-box').hidden = !pideSector(state);
+  $('#dom-note').hidden = !dom;
+  $('#dom-note').textContent = ev.tipo === 'zona' ? 'Envío ' + ev.zona.nombre + ': ' + envioTxt(ev.monto) + '. Te confirmamos la dirección y la hora por WhatsApp.'
+    : ev.tipo === 'otro' ? 'Te cotizamos el envío de tu sector por WhatsApp. Allí también confirmamos la dirección.'
+    : pideSector(state) ? 'Elige tu sector para ver el envío. La dirección te la confirmamos por WhatsApp.'
+    : 'El envío fuera de la ciudad de Panamá se cotiza. Te confirmamos la dirección y el costo por WhatsApp.';
+  $('#ret-note').hidden = dom;
   $('#tot-label').textContent = totalLabel(state);
 }
 function syncForm(){
   const f = state.form;
-  $('#f-nombre').value = f.nombre; $('#f-apellido').value = f.apellido; $('#f-nac').value = f.nac; $('#f-correo').value = f.correo; if(!PROVINCIAS.includes(f.prov)) f.prov = 'Panamá'; $('#f-prov').value = f.prov; $('#f-fuente').value = f.fuente || ''; $('#f-referido').value = f.referido; $('#ref-box').hidden = f.fuente !== F_REC; $('#f-fecha').value = f.fecha;
+  $('#f-nombre').value = f.nombre; $('#f-apellido').value = f.apellido; $('#f-nac').value = f.nac; $('#f-correo').value = f.correo; if(!PROVINCIAS.includes(f.prov)) f.prov = 'Panamá'; $('#f-prov').value = f.prov; if(f.sector !== SECTOR_OTRO && !zonaDeSector(f.sector)) f.sector = ''; $('#f-sector').value = f.sector; $('#f-fuente').value = f.fuente || ''; $('#f-referido').value = f.referido; $('#ref-box').hidden = f.fuente !== F_REC; $('#f-fecha').value = f.fecha;
   $('#f-hora').value = f.hora; $('#f-pago').value = f.pago; $('#f-notas').value = f.notas;
   $('#e-dom').checked = f.entrega === 'Domicilio'; $('#e-ret').checked = f.entrega === 'Retiro';
 }
@@ -644,14 +689,14 @@ $('#lines').addEventListener('click', e => {
   saveCart(); renderCart();
 });
 
-const FIELDS = { 'f-nombre':'nombre', 'f-apellido':'apellido', 'f-nac':'nac', 'f-correo':'correo', 'f-prov':'prov', 'f-fuente':'fuente', 'f-referido':'referido', 'f-fecha':'fecha', 'f-hora':'hora', 'f-pago':'pago', 'f-notas':'notas' };
+const FIELDS = { 'f-nombre':'nombre', 'f-apellido':'apellido', 'f-nac':'nac', 'f-correo':'correo', 'f-prov':'prov', 'f-sector':'sector', 'f-fuente':'fuente', 'f-referido':'referido', 'f-fecha':'fecha', 'f-hora':'hora', 'f-pago':'pago', 'f-notas':'notas' };
 $('#form').addEventListener('input', e => {
   const k = FIELDS[e.target.id];
   if(k){ state.form[k] = e.target.value; e.target.classList.remove('bad'); }
   else if(e.target.name === 'entrega'){ state.form.entrega = e.target.value; }
   if(e.target.id === 'f-fuente') $('#ref-box').hidden = e.target.value !== F_REC;
   saveForm(); updateSend();
-  if(e.target.name === 'entrega') renderCart();
+  if(e.target.name === 'entrega' || e.target.id === 'f-prov' || e.target.id === 'f-sector') renderCart();
 });
 $('#form').addEventListener('change', e => { if(e.target.id === 'f-pago'){ state.form.pago = e.target.value; saveForm(); updateSend(); } });
 $('#form').addEventListener('submit', e => e.preventDefault());
@@ -686,6 +731,9 @@ $('#new-order').addEventListener('click', () => {
 /* ---- Inicio ---- */
 $('#f-pago').innerHTML = '<option value="">Elige un método</option>' + CONFIG.pagos.map(p => '<option>' + esc(p) + '</option>').join('');
 $('#f-prov').innerHTML = PROVINCIAS.map(p => '<option>' + esc(p) + '</option>').join('');
+$('#f-sector').innerHTML = '<option value="">Elige tu sector</option>'
+  + ZONAS.map(z => '<optgroup label="' + esc(z.nombre + ' · ' + envioTxt(z.tarifa)) + '">' + z.sectores.map(x => '<option value="' + esc(x) + '">' + esc(x) + '</option>').join('') + '</optgroup>').join('')
+  + '<option value="' + SECTOR_OTRO + '">Otro sector (te cotizamos el envío)</option>';
 $('#f-fuente').innerHTML = '<option value="">Elige una opción</option>' + FUENTES.map(p => '<option>' + esc(p) + '</option>').join('');
 $('#f-nac').max = hoy(); $('#f-nac').min = '1920-01-01';
 $('#f-fecha').min = hoy();
@@ -735,6 +783,19 @@ $('#preview-banner').hidden = !CONFIG.preciosProvisionales;
 $('#fab').href = waUrl('Hola, tengo una consulta sobre sus perfumes y decants.');
 $('#sm-wa').href = waUrl('Hola, tengo una consulta sobre sus perfumes y decants.');
 document.querySelectorAll('a[data-wa]').forEach(a => { a.href = waUrl(a.dataset.wa); });
+(function(){
+  const box = $('#zonas'), wrap = $('#zonas-wrap');
+  if(box && wrap){
+    wrap.hidden = !ZONAS.length;
+    box.innerHTML = ZONAS.map(z => '<div class="zona"><div class="zona-h"><h3>' + esc(z.nombre) + '</h3><span class="zona-p">' + envioTxt(z.tarifa) + '</span></div><p>' + esc(z.sectores.join(', ')) + '.</p></div>').join('');
+  }
+  const fq = $('#faq-envio');
+  if(fq && ZONAS.length){
+    const ts = ZONAS.map(z => z.tarifa), mn = Math.min(...ts), mx = Math.max(...ts);
+    fq.innerHTML = '<p>En la ciudad de Panamá el envío tiene tarifa fija según tu sector: ' + (mn === mx ? envioTxt(mn) : 'desde ' + envioTxt(mn) + ' hasta ' + money(mx)) + '. Eliges tu sector al hacer el pedido y el total ya lo incluye.</p>'
+      + '<p>Fuera de la ciudad (Panamá Oeste, Colón y el interior) cotizamos el envío contigo por WhatsApp. El retiro no tiene costo de envío. <a href="entregas.html">Ver zonas y tarifas</a>.</p>';
+  }
+})();
 document.querySelectorAll('.pays').forEach(ul => { ul.innerHTML = CONFIG.pagos.map(x => '<li>' + esc(x) + '</li>').join(''); });
 const PACK_LBL = { 'Árabe':'Árabes', 'Diseñador':'Diseñadores', 'Nicho':'Nicho' };
 const packLbl = k => k.cat ? (PACK_LBL[k.cat] || k.cat) : 'Combo libre';
