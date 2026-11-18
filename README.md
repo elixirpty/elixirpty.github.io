@@ -13,3 +13,5 @@ Archivos compartidos:
 - `data/catalogo.js`: perfumes, precios de decants (5 y 10 ml) y promos publicados. El frasco completo no se publica: se consulta por WhatsApp.
 - `img/perfumes/`: fotos de los perfumes originales.
 - `fotos/`: fotos de los perfumes agregados desde el panel.
+
+Promo oculta (sin packs activos): `promo.html` va en `noindex` y fuera de `sitemap.xml`, y su descripción no menciona regalos. Al reactivar la promo: quitar `noindex`, volver a poner `promo.html` en el sitemap y restaurar su descripción y las menciones en `terminos.html` y `preguntas-frecuentes.html`.
