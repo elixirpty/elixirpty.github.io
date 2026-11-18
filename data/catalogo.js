@@ -1,8 +1,8 @@
 window.ELIXIR_CATALOGO = {
-"actualizado": "2026-11-18T23:08:23.000Z",
+"actualizado": "2026-11-18T23:47:04Z",
 "whatsapp": "50762003794",
 "itbms": 0,
-"preciosProvisionales": true,
+"preciosProvisionales": false,
 "redes": {"instagram":"https://instagram.com/elixirdecantspty","link":"https://link.bio/elixirdecantspty","threads":"https://www.threads.net/@elixirdecantspty","tiktok":"https://www.tiktok.com/@elixirpty"},
 "resenas": [],
 "envio": {"zonas":[{"id":"z1","nombre":"Zona 1 \u00b7 Centro","tarifa":3,"sectores":["Bella Vista","Obarrio","El Cangrejo","Marbella","San Francisco","Punta Pac\u00edfica","Paitilla","Calidonia","Casco Antiguo"]},{"id":"z2","nombre":"Zona 2 \u00b7 Cercana","tarifa":4,"sectores":["Betania","Pueblo Nuevo","R\u00edo Abajo","Albrook","Clayton","Anc\u00f3n","Costa del Este","Juan D\u00edaz","Pedregal"]},{"id":"z3","nombre":"Zona 3 \u00b7 Alejada","tarifa":5,"sectores":["San Miguelito","Tocumen","24 de Diciembre","Las Cumbres","Chilibre","Pacora"]}]},

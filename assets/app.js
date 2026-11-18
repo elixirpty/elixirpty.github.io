@@ -267,8 +267,7 @@ const SHELL = {
 </svg>
 
 `,
-  top: `<div class="preview" id="preview-banner" hidden>Los precios pueden variar. El total final se confirma por WhatsApp.</div>
-<header class="top">
+  top: `<header class="top">
     <div class="wrap">
       <div class="top-l">
         <a class="menubtn backbtn" id="back" href="index.html" aria-label="Volver a la página anterior" title="Volver" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M19 12H5"/><path d="M11 6l-6 6 6 6"/></svg></a>
@@ -720,7 +719,6 @@ $('#f-sector').innerHTML = '<option value="">Elige tu sector</option>'
   + '<option value="' + SECTOR_OTRO + '">Otro sector (te cotizamos el envío)</option>';
 $('#f-fuente').innerHTML = '<option value="">Elige una opción</option>' + FUENTES.map(p => '<option>' + esc(p) + '</option>').join('');
 $('#f-nac').max = hoy(); $('#f-nac').min = '1920-01-01';
-$('#preview-banner').hidden = !CONFIG.preciosProvisionales;
 
 /* ---- FAQ, redes y reseñas ---- */
   (function(){
