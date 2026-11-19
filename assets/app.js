@@ -294,8 +294,8 @@ const SHELL = {
       <p class="fine">Realiza tu pedido por WhatsApp. Te confirmamos el total y la entrega. El pago es contra entrega.</p>
     </div>
   </footer>
-<a class="fab" id="fab" href="#" target="_blank" rel="noopener" aria-label="Escribirnos por WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 20.5l1.7-5.5A8.4 8.4 0 1 1 21 11.5z"/><path d="M8.5 10.2h7M8.5 13.2h4.5"/></svg><span>Escríbenos</span></a>
-<div class="qk" id="qk" role="region" aria-label="Preguntas rápidas por WhatsApp"><div class="qk-list" id="qk-list"></div><button class="qk-t" id="qk-t" type="button" aria-expanded="true" aria-controls="qk-list"><span class="qk-x" aria-hidden="true">✕</span><span class="qk-t-txt">Ocultar preguntas</span></button></div>
+<button class="fab" id="fab" type="button" aria-label="Escribirnos por WhatsApp" aria-haspopup="true" aria-expanded="false" aria-controls="qk-list"><svg class="ic-wa" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 20.5l1.7-5.5A8.4 8.4 0 1 1 21 11.5z"/><path d="M8.5 10.2h7M8.5 13.2h4.5"/></svg><svg class="ic-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true" focusable="false"><path d="M6 6l12 12M18 6L6 18"/></svg><span class="fab-t">Escríbenos</span></button>
+<div class="qk" id="qk"><div class="qk-list" id="qk-list" role="group" aria-label="Opciones para escribirnos por WhatsApp" hidden></div></div>
 
   
 <div class="bar" id="bar">
@@ -804,27 +804,28 @@ $('#f-fuente').innerHTML = '<option value="">Elige una opción</option>' + FUENT
 
 
 /* ============ INICIO COMÚN: formulario, aviso, WhatsApp ============ */
-$('#fab').href = waUrl('Hola, tengo una consulta sobre sus perfumes y decants.');
 $('#sm-wa').href = waUrl('Hola, tengo una consulta sobre sus perfumes y decants.');
-/* Preguntas rápidas flotantes: cada una abre WhatsApp con su mensaje; un solo botón las oculta o las muestra (se recuerda la elección). */
+/* Botón flotante de WhatsApp: al tocarlo abre 3 opciones; cada una abre WhatsApp con su mensaje. Se cierra al tocar fuera, con Escape o al elegir. */
 (function(){
-  const box = $('#qk'); if(!box) return;
+  const fab = $('#fab'), box = $('#qk'), list = $('#qk-list'); if(!fab || !box || !list) return;
   const QS = [
-    ['Consultar perfumes y decants', 'Hola, tengo una consulta sobre sus perfumes y decants.'],
-    ['Precio del frasco completo', 'Hola, quisiera consultar el precio y la disponibilidad de un frasco completo.'],
-    ['Entregas y pagos', 'Hola, tengo una consulta sobre la entrega o el pago de mi pedido.']
+    ['Consultar Perfumes', 'Hola, tengo una consulta sobre sus perfumes y decants.'],
+    ['Entregas y Pagos', 'Hola, tengo una consulta sobre la entrega o el pago de mi pedido.'],
+    ['Otras Preguntas', 'Hola, tengo otra pregunta.']
   ];
-  const list = $('#qk-list'), btn = $('#qk-t');
   list.innerHTML = QS.map(q => '<a class="qk-i" href="' + waUrl(q[1]) + '" target="_blank" rel="noopener noreferrer">' + esc(q[0]) + '</a>').join('');
-  function set(open, save){
-    list.hidden = !open; box.classList.toggle('open', open);
-    btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-    btn.querySelector('.qk-x').hidden = !open;
-    btn.querySelector('.qk-t-txt').textContent = open ? 'Ocultar preguntas' : 'Preguntas rápidas';
-    if(save) LS.set('elx_qk', open ? 1 : 0);
+  const txt = fab.querySelector('.fab-t');
+  function set(open){
+    list.hidden = !open; box.classList.toggle('open', open); fab.classList.toggle('open', open);
+    fab.setAttribute('aria-expanded', open ? 'true' : 'false');
+    fab.setAttribute('aria-label', open ? 'Cerrar opciones de WhatsApp' : 'Escribirnos por WhatsApp');
+    if(txt) txt.textContent = open ? 'Cerrar' : 'Escríbenos';
   }
-  set(LS.get('elx_qk') !== 0, false);
-  btn.addEventListener('click', () => set(list.hidden, true));
+  set(false);
+  fab.addEventListener('click', () => set(list.hidden));
+  list.addEventListener('click', e => { if(e.target.closest('a')) set(false); });
+  document.addEventListener('click', e => { if(!list.hidden && !e.target.closest('#fab') && !e.target.closest('#qk')) set(false); });
+  document.addEventListener('keydown', e => { if(e.key === 'Escape' && !list.hidden){ set(false); fab.focus(); } });
 })();
 document.querySelectorAll('a[data-wa]').forEach(a => { a.href = waUrl(a.dataset.wa); });
 (function(){
