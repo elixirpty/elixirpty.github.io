@@ -170,7 +170,8 @@ function totalFinal(st){ const e = envioDe(st); return r2(totals(cartItems(st.ca
 function totalLabel(st){ const e = envioDe(st); return e.tipo === 'retiro' || e.tipo === 'zona' ? 'Total' : 'Total (sin envío)'; }
 function buildMessage(st){
   const its = cartItems(st.cart), t = totals(its), f = st.form, L = [];
-  L.push('Hola, quiero hacer este pedido en Elixir Decants & Parfums', '');
+  const nF = its.filter(i => Number(i.ml) >= 100).length, tipoP = !nF ? 'Decants' : (nF === its.length ? 'Perfumes' : 'Decants y Perfumes');
+  L.push('¡Hola ELIXIR!, Quiero hacer este pedido de ' + tipoP + '.', '');
   L.push('Nombre: ' + (f.nombre.trim() || '-'));
   L.push('Apellido: ' + (f.apellido.trim() || '-'));
   L.push('Provincia: ' + (f.prov || PROVINCIAS[0]));
