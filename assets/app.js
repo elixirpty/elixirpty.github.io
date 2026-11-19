@@ -171,7 +171,7 @@ function buildMessage(st){
   const ev = envioDe(st);
   if(ev.tipo === 'zona') L.push('Sector: ' + ev.sector);
   else if(ev.tipo === 'otro') L.push('Sector: otro sector de la ciudad (por cotizar)');
-  L.push('Pago: ' + (f.pago || '-'), 'Pago contra entrega: se paga al recibir el pedido.', '');
+  L.push('Pago: ' + (f.pago || '-'), '');
   L.push('Productos:');
   its.forEach((i, n) => L.push((n + 1) + ') ' + i.p.marca + ' ' + i.p.modelo + ' - ' + nameOf(i.p, i.ml) + ' x' + i.q + ' - ' + money(i.total)));
   gift(its).list.filter(r => r.n).forEach(r => L.push(r.pack.nombre + ': ' + pl(r.n, 'Decant Sorpresa', 'Decants Sorpresa') + ' de 2 ml (' + (r.pack.cat ? 'perfume ' + CAT_ADJ[r.pack.cat] + ', ' : '') + 'la elige ' + CONFIG.tienda + ')'));
