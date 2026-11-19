@@ -178,7 +178,7 @@ function buildMessage(st){
   L.push('');
   L.push('Subtotal: ' + money(t.sub));
   if(CONFIG.itbms > 0) L.push('ITBMS (' + Math.round(CONFIG.itbms * 100) + '%): ' + money(t.tax));
-  L.push('Envío: ' + (ev.tipo === 'retiro' ? 'no aplica (retiro)' : ev.tipo === 'zona' ? (ev.monto > 0 ? money(ev.monto) : 'gratis') : 'por confirmar'));
+  if(ev.tipo !== 'retiro') L.push('Envío: ' + (ev.tipo === 'zona' ? (ev.monto > 0 ? money(ev.monto) : 'gratis') : 'por confirmar'));
   L.push(totalLabel(st) + ': ' + money(totalFinal(st)));
   if(f.notas.trim()) L.push('', 'Notas: ' + f.notas.trim().replace(/\s*\n\s*/g, ' '));
   return L.join('\n');
