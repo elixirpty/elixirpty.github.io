@@ -331,8 +331,8 @@ const SHELL = {
 
   <div class="dbody" id="dbody">
     <div class="sent" id="sent" hidden>
-      <p>Tu pedido <b id="sent-code"></b> está listo para enviarse por WhatsApp. Si WhatsApp se abrió, toca Enviar para completarlo. Si no, usa “Copiar pedido” y pégalo en el chat.</p>
-      <button class="btn ghost" id="new-order" type="button">Empezar un pedido nuevo</button>
+      <p>Abrimos WhatsApp con tu pedido <b id="sent-code"></b>. Toca Enviar en el chat para completarlo. Tu canasta ya quedó vacía para hacer un pedido nuevo.</p>
+      <button class="btn ghost" id="recover" type="button">No se envió: recuperar mi pedido</button>
     </div>
 
     <p class="empty" id="empty">Tu pedido está vacío. Agrega una fragancia del catálogo.</p>
@@ -414,7 +414,6 @@ const SHELL = {
     <div class="tot"><span id="tot-label">Total (sin envío)</span><b id="tot">$0.00</b></div>
     <p class="hint" style="text-align:center;margin:-4px 0 2px">Pago contra entrega</p>
     <a class="btn wa" id="send" href="#" target="_blank" rel="noopener noreferrer">Enviar pedido por WhatsApp</a>
-    <button class="btn ghost" id="copy" type="button">Copiar pedido</button>
   </div>
 </aside>
 
@@ -543,6 +542,7 @@ function updateBadges(){
 function add(id, ml, btn){
   if(isOut(BY_ID[id], ml)) return;
   const key = id + '|' + ml;
+  soltarEnviado();
   state.cart[key] = (state.cart[key] || 0) + 1;
   saveCart(); renderCart();
   if(btn){
@@ -660,7 +660,7 @@ document.addEventListener('keydown', e => { if(e.key === 'Escape' && $('#drawer'
 
 $('#lines').addEventListener('click', e => {
   const inc = e.target.closest('[data-inc]'), dec = e.target.closest('[data-dec]');
-  if(inc){ state.cart[inc.dataset.inc] = (state.cart[inc.dataset.inc] || 0) + 1; }
+  if(inc){ soltarEnviado(); state.cart[inc.dataset.inc] = (state.cart[inc.dataset.inc] || 0) + 1; }
   else if(dec){
     const k = dec.dataset.dec; state.cart[k] = (state.cart[k] || 0) - 1;
     if(state.cart[k] <= 0) delete state.cart[k];
@@ -688,56 +688,41 @@ $('#send').addEventListener('click', e => {
   $('#sent-code').textContent = state.code;
   $('#sent').hidden = false;
   $('#dbody').scrollTo({ top:0 });
+  /* WhatsApp ya empezó a abrirse: un momento después la canasta queda vacía para el siguiente pedido */
+  setTimeout(() => { const m = LS.get('elx_sent'); if(m && m.code === state.code) reiniciarPedido(); }, 1200);
 });
-$('#copy').addEventListener('click', async () => {
-  const errs = validate(state);
-  if(errs.length){ showErrors(errs); return; }
-  clearErrors();
-  const msg = buildMessage(state);
-  marcarEnviado();
-  try { await navigator.clipboard.writeText(msg); toast('Pedido copiado. Pégalo en el chat de WhatsApp.'); }
-  catch(err){
-    $('#det').open = true; const ta = $('#preview'); ta.focus(); ta.select();
-    toast('No se pudo copiar automáticamente. El mensaje quedó seleccionado: cópialo y pégalo en WhatsApp.');
-  }
-});
-function nuevoPedido(){
+
+/* Al enviar el pedido se guarda una copia (marca «elx_sent»). La canasta se vacía enseguida para que el cliente no vea el pedido que ya
+   mandó por WhatsApp; si no alcanzó a enviarlo, puede recuperarlo desde el aviso. */
+function marcarEnviado(){
+  LS.set('elx_sent', { code: state.code, notas: state.form.notas, cart: state.cart, at: Date.now() });
+}
+function olvidarEnviado(){ try { localStorage.removeItem('elx_sent'); } catch(e) {} }
+function reiniciarPedido(){
   state.cart = {}; state.code = newCode();
   state.form.notas = '';
   LS.set('elx_code', state.code); saveCart(); saveForm();
-  $('#sent').hidden = true; syncForm(); renderCart(); closeCart();
+  syncForm(); renderCart();
 }
-$('#new-order').addEventListener('click', () => { try { localStorage.removeItem('elx_sent'); } catch(e) {} nuevoPedido(); });
-
-/* Al enviar (o copiar) el pedido se guarda una marca. Cuando el cliente vuelve a la página, la canasta se reinicia para que no siga
-   mostrando el pedido que ya mandó por WhatsApp; con un aviso para recuperarlo por si todavía no lo había enviado. */
-let sentArmed = false;
-function marcarEnviado(){
-  LS.set('elx_sent', { code: state.code, notas: state.form.notas, cart: state.cart, at: Date.now() });
-  sentArmed = false;
+function recuperarPedido(){
+  const m = LS.get('elx_sent'); if(!m) return;
+  olvidarEnviado();
+  state.cart = m.cart || {}; state.code = m.code || newCode(); state.form.notas = m.notas || '';
+  LS.set('elx_code', state.code); saveCart(); saveForm();
+  $('#sent').hidden = true; syncForm(); renderCart();
+  const t = $('.toast'); if(t) t.remove();
 }
-function toastUndo(msg, onUndo){
+/* Cuando el cliente empieza a armar otro pedido, ya no hace falta poder recuperar el anterior */
+function soltarEnviado(){ if(!$('#sent').hidden || LS.get('elx_sent')){ $('#sent').hidden = true; olvidarEnviado(); } }
+$('#recover').addEventListener('click', recuperarPedido);
+function toastUndo(msg, label, fn){
   const old = $('.toast'); if(old) old.remove();
   const t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status');
   const sp = document.createElement('span'); sp.textContent = msg + ' ';
-  const b = document.createElement('button'); b.type = 'button'; b.className = 'toast-btn'; b.textContent = 'Recuperar el anterior';
-  b.addEventListener('click', () => { onUndo(); t.remove(); });
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'toast-btn'; b.textContent = label;
+  b.addEventListener('click', () => { fn(); t.remove(); });
   t.append(sp, b); document.body.appendChild(t); setTimeout(() => t.remove(), 12000);
 }
-function reiniciarSiEnviado(){
-  const sent = LS.get('elx_sent'); if(!sent) return;
-  try { localStorage.removeItem('elx_sent'); } catch(e) {}
-  if(!Object.keys(state.cart).length) return;
-  nuevoPedido();
-  toastUndo('Empezamos un pedido nuevo.', () => {
-    state.cart = sent.cart || {}; state.code = sent.code || newCode(); state.form.notas = sent.notas || '';
-    LS.set('elx_code', state.code); saveCart(); saveForm(); syncForm(); renderCart();
-  });
-}
-document.addEventListener('visibilitychange', () => {
-  if(document.visibilityState === 'hidden'){ if(LS.get('elx_sent')) sentArmed = true; }
-  else if(sentArmed){ sentArmed = false; reiniciarSiEnviado(); }
-});
 
 
 /* ---- Inicio ---- */
@@ -810,7 +795,14 @@ const PACK_LBL = { 'Árabe':'Árabes', 'Diseñador':'Diseñadores', 'Nicho':'Nic
 const packLbl = k => k.cat ? (PACK_LBL[k.cat] || k.cat) : 'Combo libre';
 const calm = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 syncForm(); renderCart();
-reiniciarSiEnviado();
+(function(){
+  const m = LS.get('elx_sent'); if(!m) return;
+  if(Date.now() - (m.at || 0) > 864e5){ olvidarEnviado(); return; }          /* más de un día: ya no se ofrece recuperar */
+  if(Object.keys(state.cart).length) reiniciarPedido();                        /* la página se recargó antes del reinicio */
+  if(m.avisado) return;
+  m.avisado = true; LS.set('elx_sent', m);
+  toastUndo('Empezamos un pedido nuevo.', 'Recuperar el anterior', recuperarPedido);
+})();
 
 /* ============ PÁGINAS ============ */
 /* ---- Inicio: colecciones y enlaces ---- */
