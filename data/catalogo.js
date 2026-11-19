@@ -1,5 +1,5 @@
 window.ELIXIR_CATALOGO = {
-"actualizado": "2026-11-18T23:47:04Z",
+"actualizado": "2026-11-19T01:04:22Z",
 "whatsapp": "50762003794",
 "itbms": 0,
 "preciosProvisionales": false,
@@ -13,7 +13,8 @@ window.ELIXIR_CATALOGO = {
 {"id":"PF-004","sku":"ELX-ARM-001","marca":"Giorgio Armani","modelo":"Acqua di Gio Profondo","conc":"Eau de Parfum","genero":"Hombre","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":7.5,"10":15}},
 {"id":"PF-005","sku":"ELX-RAS-001","marca":"Rasasi","modelo":"Hawas Ice Freeze","conc":"Eau de Parfum","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":4,"10":7.5},"mes":1},
 {"id":"PF-006","sku":"ELX-LAT-001","marca":"Lattafa","modelo":"Khamrah Waha","conc":"Eau de Parfum","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":3.5,"10":6.5},"mes":1},
-{"id":"PF-007","sku":"ELX-ARF-001","marca":"Armaf","modelo":"Odyssey Mandarin Sky","conc":"Elixir","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":3,"10":5.5},"agota":[5,10]}
+{"id":"PF-007","sku":"ELX-ARF-001","marca":"Armaf","modelo":"Odyssey Mandarin Sky","conc":"Elixir","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":3,"10":5.5},"agota":[5,10]},
+{"id":"PF-008","sku":"ELX-PAC-008","marca":"Paco Rabanne","modelo":"1 Million Black","conc":"Eau de Parfum","genero":"Hombre","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":7,"10":14},"foto":"fotos/PF-008-d692f2a2.jpg"}
 ],
 "packs": []
 };
