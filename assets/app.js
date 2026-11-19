@@ -110,10 +110,21 @@ function hoy(){
   const d = new Date();
   return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
 }
-function newCode(){
-  const d = new Date();
-  const r = Math.random().toString(36).slice(2, 5).toUpperCase().padEnd(3, 'X');
-  return 'ELX-' + String(d.getDate()).padStart(2, '0') + String(d.getMonth() + 1).padStart(2, '0') + '-' + r;
+/* Código del pedido: ELX-DEC-001, 002, 003… El número consecutivo se pide a un contador en línea justo al enviar el pedido
+   (así no se gastan números si el cliente no envía). Si el contador no responde, se usa un código de respaldo (ELX-DEC-R…)
+   para no perder el pedido. */
+const CODE_API = 'https://abacus.jasoncameron.dev/hit/elixirpty-pedidos/dec';
+function codigoRespaldo(){ return 'ELX-DEC-R' + Math.random().toString(36).slice(2, 6).toUpperCase().padEnd(4, 'X'); }
+async function asignarCodigo(){
+  let timer;
+  try {
+    const ctl = new AbortController(); timer = setTimeout(() => ctl.abort(), 6000);
+    const r = await fetch(CODE_API, { signal: ctl.signal, cache: 'no-store' });
+    const n = parseInt((await r.json()).value, 10);
+    if(r.ok && n > 0 && n < 100000) return 'ELX-DEC-' + String(n).padStart(3, '0');
+  } catch(e) {}
+  finally { clearTimeout(timer); }
+  return codigoRespaldo();
 }
 function fmtFecha(v){
   if(!v) return '';
@@ -179,7 +190,7 @@ function buildMessage(st){
   if(CONFIG.itbms > 0) L.push('ITBMS (' + Math.round(CONFIG.itbms * 100) + '%): ' + money(t.tax));
   if(ev.tipo !== 'retiro') L.push('Envío: ' + (ev.tipo === 'zona' ? (ev.monto > 0 ? money(ev.monto) : 'gratis') : 'por confirmar'));
   L.push(totalLabel(st) + ': ' + money(totalFinal(st)));
-  L.push('Pedido: ' + st.code);
+  L.push('Pedido: ' + (st.code || '(se asigna al enviar)'));
   if(f.notas.trim()) L.push('', 'Notas: ' + f.notas.trim().replace(/\s*\n\s*/g, ' '));
   return L.join('\n');
 }
@@ -233,7 +244,7 @@ const F_REC = 'Recomendación de un amigo';   // las 10 provincias de Panamá
 const state = {
   cart: LS.get('elx_cart') || {},
   form: Object.assign({ nombre:'', apellido:'', correo:'', prov:'Panamá', sector:'', fuente:'', referido:'', entrega:'Domicilio', pago:'', notas:'' }, LS.get('elx_form') || {}),
-  code: LS.get('elx_code') || newCode(),
+  code: LS.get('elx_code') || '',
   sel: {}, tipo: 'Todos', gen: 'Todos', q: '', promoSel: null
 };
 state.cart = Object.fromEntries(Object.entries(state.cart).filter(([k, q]) => cartItems({ [k]:q }).length));
@@ -564,7 +575,7 @@ function renderCart(){
   document.body.classList.toggle('has-bar', n > 0);
   $('#bar-n').textContent = n + (n === 1 ? ' artículo' : ' artículos');
   $('#bar-t').textContent = money(t.total);
-  $('#d-code').textContent = 'Pedido ' + state.code;
+  $('#d-code').textContent = state.code ? 'Pedido ' + state.code : '';
   $('#empty').hidden = !empty;
   $('#filled').hidden = empty;
   $('#dfoot').hidden = empty;
@@ -681,16 +692,34 @@ $('#form').addEventListener('input', e => {
 $('#form').addEventListener('change', e => { if(e.target.id === 'f-pago'){ state.form.pago = e.target.value; saveForm(); updateSend(); } });
 $('#form').addEventListener('submit', e => e.preventDefault());
 
-$('#send').addEventListener('click', e => {
-  const errs = validate(state);
-  if(errs.length){ e.preventDefault(); showErrors(errs); return; }
-  clearErrors();
+function terminarEnvio(){
   marcarEnviado();
   $('#sent-code').textContent = state.code;
   $('#sent').hidden = false;
   $('#dbody').scrollTo({ top:0 });
   /* WhatsApp ya empezó a abrirse: un momento después la canasta queda vacía para el siguiente pedido */
   setTimeout(() => { const m = LS.get('elx_sent'); if(m && m.code === state.code) reiniciarPedido(); }, 1200);
+}
+let enviando = false;
+$('#send').addEventListener('click', async e => {
+  const errs = validate(state);
+  if(errs.length){ e.preventDefault(); showErrors(errs); return; }
+  clearErrors();
+  if(state.code){ terminarEnvio(); return; }      /* código ya asignado: el enlace abre WhatsApp tal cual */
+  e.preventDefault();
+  if(enviando) return;
+  enviando = true;
+  const btn = $('#send'), txt = btn.textContent;
+  btn.textContent = 'Preparando tu pedido…'; btn.setAttribute('aria-busy', 'true');
+  state.code = await asignarCodigo();
+  LS.set('elx_code', state.code);
+  updateSend();
+  btn.textContent = txt; btn.removeAttribute('aria-busy');
+  enviando = false;
+  const url = btn.href;
+  terminarEnvio();
+  const w = window.open(url, '_blank');
+  if(w){ try { w.opener = null; } catch(e) {} } else { window.location.href = url; }   /* si el navegador bloquea la ventana, se abre en esta misma */
 });
 
 /* Al enviar el pedido se guarda una copia (marca «elx_sent»). La canasta se vacía enseguida para que el cliente no vea el pedido que ya
@@ -700,7 +729,7 @@ function marcarEnviado(){
 }
 function olvidarEnviado(){ try { localStorage.removeItem('elx_sent'); } catch(e) {} }
 function reiniciarPedido(){
-  state.cart = {}; state.code = newCode();
+  state.cart = {}; state.code = '';
   state.form.notas = '';
   LS.set('elx_code', state.code); saveCart(); saveForm();
   syncForm(); renderCart();
@@ -708,7 +737,7 @@ function reiniciarPedido(){
 function recuperarPedido(){
   const m = LS.get('elx_sent'); if(!m) return;
   olvidarEnviado();
-  state.cart = m.cart || {}; state.code = m.code || newCode(); state.form.notas = m.notas || '';
+  state.cart = m.cart || {}; state.code = m.code || ''; state.form.notas = m.notas || '';
   LS.set('elx_code', state.code); saveCart(); saveForm();
   $('#sent').hidden = true; syncForm(); renderCart();
   const t = $('.toast'); if(t) t.remove();
