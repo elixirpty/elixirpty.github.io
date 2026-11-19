@@ -611,3 +611,5 @@ a.frasco:hover span{color:var(--ink)}
 .zona-p{padding:4px 12px;border:1px solid var(--glass-line);border-radius:999px;color:var(--gold-hi);font:600 14px var(--body)}
 .prose .zona p{margin:0;font-size:14px;line-height:1.55}
 @media (min-width:760px){.zonas{grid-template-columns:repeat(3,minmax(0,1fr))}}
+
+.toast-btn{background:none;border:0;padding:0 0 0 4px;color:var(--gold-hi);font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:3px;cursor:pointer}

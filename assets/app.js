@@ -684,6 +684,7 @@ $('#send').addEventListener('click', e => {
   const errs = validate(state);
   if(errs.length){ e.preventDefault(); showErrors(errs); return; }
   clearErrors();
+  marcarEnviado();
   $('#sent-code').textContent = state.code;
   $('#sent').hidden = false;
   $('#dbody').scrollTo({ top:0 });
@@ -693,17 +694,49 @@ $('#copy').addEventListener('click', async () => {
   if(errs.length){ showErrors(errs); return; }
   clearErrors();
   const msg = buildMessage(state);
+  marcarEnviado();
   try { await navigator.clipboard.writeText(msg); toast('Pedido copiado. Pégalo en el chat de WhatsApp.'); }
   catch(err){
     $('#det').open = true; const ta = $('#preview'); ta.focus(); ta.select();
     toast('No se pudo copiar automáticamente. El mensaje quedó seleccionado: cópialo y pégalo en WhatsApp.');
   }
 });
-$('#new-order').addEventListener('click', () => {
+function nuevoPedido(){
   state.cart = {}; state.code = newCode();
   state.form.notas = '';
   LS.set('elx_code', state.code); saveCart(); saveForm();
   $('#sent').hidden = true; syncForm(); renderCart(); closeCart();
+}
+$('#new-order').addEventListener('click', () => { try { localStorage.removeItem('elx_sent'); } catch(e) {} nuevoPedido(); });
+
+/* Al enviar (o copiar) el pedido se guarda una marca. Cuando el cliente vuelve a la página, la canasta se reinicia para que no siga
+   mostrando el pedido que ya mandó por WhatsApp; con un aviso para recuperarlo por si todavía no lo había enviado. */
+let sentArmed = false;
+function marcarEnviado(){
+  LS.set('elx_sent', { code: state.code, notas: state.form.notas, cart: state.cart, at: Date.now() });
+  sentArmed = false;
+}
+function toastUndo(msg, onUndo){
+  const old = $('.toast'); if(old) old.remove();
+  const t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status');
+  const sp = document.createElement('span'); sp.textContent = msg + ' ';
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'toast-btn'; b.textContent = 'Recuperar el anterior';
+  b.addEventListener('click', () => { onUndo(); t.remove(); });
+  t.append(sp, b); document.body.appendChild(t); setTimeout(() => t.remove(), 12000);
+}
+function reiniciarSiEnviado(){
+  const sent = LS.get('elx_sent'); if(!sent) return;
+  try { localStorage.removeItem('elx_sent'); } catch(e) {}
+  if(!Object.keys(state.cart).length) return;
+  nuevoPedido();
+  toastUndo('Empezamos un pedido nuevo.', () => {
+    state.cart = sent.cart || {}; state.code = sent.code || newCode(); state.form.notas = sent.notas || '';
+    LS.set('elx_code', state.code); saveCart(); saveForm(); syncForm(); renderCart();
+  });
+}
+document.addEventListener('visibilitychange', () => {
+  if(document.visibilityState === 'hidden'){ if(LS.get('elx_sent')) sentArmed = true; }
+  else if(sentArmed){ sentArmed = false; reiniciarSiEnviado(); }
 });
 
 
@@ -777,6 +810,7 @@ const PACK_LBL = { 'Árabe':'Árabes', 'Diseñador':'Diseñadores', 'Nicho':'Nic
 const packLbl = k => k.cat ? (PACK_LBL[k.cat] || k.cat) : 'Combo libre';
 const calm = () => !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
 syncForm(); renderCart();
+reiniciarSiEnviado();
 
 /* ============ PÁGINAS ============ */
 /* ---- Inicio: colecciones y enlaces ---- */
