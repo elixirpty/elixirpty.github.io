@@ -160,7 +160,6 @@ function totalLabel(st){ const e = envioDe(st); return e.tipo === 'retiro' || e.
 function buildMessage(st){
   const its = cartItems(st.cart), t = totals(its), f = st.form, L = [];
   L.push('Hola, quiero hacer este pedido en Elixir Decants & Parfums', '');
-  L.push('Pedido: ' + st.code);
   L.push('Nombre: ' + (f.nombre.trim() || '-'));
   L.push('Apellido: ' + (f.apellido.trim() || '-'));
   L.push('Provincia: ' + (f.prov || PROVINCIAS[0]));
@@ -180,6 +179,7 @@ function buildMessage(st){
   if(CONFIG.itbms > 0) L.push('ITBMS (' + Math.round(CONFIG.itbms * 100) + '%): ' + money(t.tax));
   if(ev.tipo !== 'retiro') L.push('Envío: ' + (ev.tipo === 'zona' ? (ev.monto > 0 ? money(ev.monto) : 'gratis') : 'por confirmar'));
   L.push(totalLabel(st) + ': ' + money(totalFinal(st)));
+  L.push('Pedido: ' + st.code);
   if(f.notas.trim()) L.push('', 'Notas: ' + f.notas.trim().replace(/\s*\n\s*/g, ' '));
   return L.join('\n');
 }
