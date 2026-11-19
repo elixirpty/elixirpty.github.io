@@ -201,7 +201,8 @@ function validate(st){
   if(!cartItems(st.cart).length) e.push(['', 'Agrega al menos un producto.', 'productos']);
   if(!f.nombre.trim()) e.push(['f-nombre', 'Escribe tu nombre.', 'nombre']);
   if(!f.apellido.trim()) e.push(['f-apellido', 'Escribe tu apellido.', 'apellido']);
-  if(f.correo.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.correo.trim())) e.push(['f-correo', 'Revisa tu correo.', 'correo']);
+  if(!f.correo.trim()) e.push(['f-correo', 'Escribe tu correo.', 'correo']);
+  else if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.correo.trim())) e.push(['f-correo', 'Revisa tu correo.', 'correo']);
   if(pideSector(st) && f.sector !== SECTOR_OTRO && !zonaDeSector(f.sector)) e.push(['f-sector', 'Elige tu sector para calcular el envío.', 'sector de entrega']);
   if(!f.pago) e.push(['f-pago', 'Elige tu método de pago.', 'método de pago']);
   return e;
@@ -372,8 +373,8 @@ const SHELL = {
           <select id="f-prov"></select>
         </div>
         <div class="field">
-          <label for="f-correo">Correo (opcional)</label>
-          <input id="f-correo" type="email" inputmode="email" autocomplete="email" placeholder="tucorreo@ejemplo.com">
+          <label for="f-correo">Correo</label>
+          <input id="f-correo" type="email" inputmode="email" autocomplete="email" placeholder="tucorreo@ejemplo.com" required aria-required="true">
         </div>
         <div class="field">
           <label for="f-fuente">¿Cómo conociste ELIXIR? (opcional)</label>
