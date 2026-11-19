@@ -159,7 +159,7 @@ function totalFinal(st){ const e = envioDe(st); return r2(totals(cartItems(st.ca
 function totalLabel(st){ const e = envioDe(st); return e.tipo === 'retiro' || e.tipo === 'zona' ? 'Total' : 'Total (sin envío)'; }
 function buildMessage(st){
   const its = cartItems(st.cart), t = totals(its), f = st.form, L = [];
-  L.push('Hola, quiero hacer este pedido en ' + CONFIG.tienda + '.', '');
+  L.push('Hola, quiero hacer este pedido en Elixir Decants & Parfums', '');
   L.push('Pedido: ' + st.code);
   L.push('Nombre: ' + (f.nombre.trim() || '-'));
   L.push('Apellido: ' + (f.apellido.trim() || '-'));
