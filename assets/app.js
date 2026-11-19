@@ -163,7 +163,6 @@ function buildMessage(st){
   L.push('Pedido: ' + st.code);
   L.push('Nombre: ' + (f.nombre.trim() || '-'));
   L.push('Apellido: ' + (f.apellido.trim() || '-'));
-  if(f.nac) L.push('Nacimiento: ' + f.nac.split('-').reverse().join('/'));
   L.push('Provincia: ' + (f.prov || PROVINCIAS[0]));
   if(f.correo.trim()) L.push('Correo: ' + f.correo.trim());
   if(f.fuente) L.push('Cómo nos conoció: ' + f.fuente);
@@ -172,14 +171,14 @@ function buildMessage(st){
   const ev = envioDe(st);
   if(ev.tipo === 'zona') L.push('Sector: ' + ev.sector);
   else if(ev.tipo === 'otro') L.push('Sector: otro sector de la ciudad (por cotizar)');
-  L.push('Pago: ' + (f.pago || '-'), '');
+  L.push('Pago: ' + (f.pago || '-'), 'Pago contra entrega: se paga al recibir el pedido.', '');
   L.push('Productos:');
-  its.forEach((i, n) => L.push((n + 1) + ') ' + i.p.marca + ' ' + i.p.modelo + ' - ' + nameOf(i.p, i.ml) + ' x' + i.q + ' - ' + money(i.total) + (i.p.sku ? ' (Cód. ' + i.p.sku + ')' : '')));
+  its.forEach((i, n) => L.push((n + 1) + ') ' + i.p.marca + ' ' + i.p.modelo + ' - ' + nameOf(i.p, i.ml) + ' x' + i.q + ' - ' + money(i.total)));
   gift(its).list.filter(r => r.n).forEach(r => L.push(r.pack.nombre + ': ' + pl(r.n, 'Decant Sorpresa', 'Decants Sorpresa') + ' de 2 ml (' + (r.pack.cat ? 'perfume ' + CAT_ADJ[r.pack.cat] + ', ' : '') + 'la elige ' + CONFIG.tienda + ')'));
   L.push('');
   L.push('Subtotal: ' + money(t.sub));
   if(CONFIG.itbms > 0) L.push('ITBMS (' + Math.round(CONFIG.itbms * 100) + '%): ' + money(t.tax));
-  L.push('Envío: ' + (ev.tipo === 'retiro' ? 'no aplica (retiro)' : ev.tipo === 'zona' ? (ev.monto > 0 ? money(ev.monto) : 'gratis') + ' (' + ev.zona.nombre + ')' : 'por confirmar'));
+  L.push('Envío: ' + (ev.tipo === 'retiro' ? 'no aplica (retiro)' : ev.tipo === 'zona' ? (ev.monto > 0 ? money(ev.monto) : 'gratis') : 'por confirmar'));
   L.push(totalLabel(st) + ': ' + money(totalFinal(st)));
   if(f.notas.trim()) L.push('', 'Notas: ' + f.notas.trim().replace(/\s*\n\s*/g, ' '));
   return L.join('\n');
@@ -190,7 +189,6 @@ function validate(st){
   if(!cartItems(st.cart).length) e.push(['', 'Agrega al menos un producto.', 'productos']);
   if(!f.nombre.trim()) e.push(['f-nombre', 'Escribe tu nombre.', 'nombre']);
   if(!f.apellido.trim()) e.push(['f-apellido', 'Escribe tu apellido.', 'apellido']);
-  if(f.nac && (f.nac > hoy() || f.nac < '1920-01-01')) e.push(['f-nac', 'Revisa tu fecha de nacimiento.', 'fecha de nacimiento']);
   if(f.correo.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.correo.trim())) e.push(['f-correo', 'Revisa tu correo.', 'correo']);
   if(pideSector(st) && f.sector !== SECTOR_OTRO && !zonaDeSector(f.sector)) e.push(['f-sector', 'Elige tu sector para calcular el envío.', 'sector de entrega']);
   if(!f.pago) e.push(['f-pago', 'Elige tu método de pago.', 'método de pago']);
@@ -234,7 +232,7 @@ const FUENTES = ['Instagram', 'Facebook', 'TikTok', 'Página web', 'WhatsApp', '
 const F_REC = 'Recomendación de un amigo';   // las 10 provincias de Panamá
 const state = {
   cart: LS.get('elx_cart') || {},
-  form: Object.assign({ nombre:'', apellido:'', nac:'', correo:'', prov:'Panamá', sector:'', fuente:'', referido:'', entrega:'Domicilio', pago:'', notas:'' }, LS.get('elx_form') || {}),
+  form: Object.assign({ nombre:'', apellido:'', correo:'', prov:'Panamá', sector:'', fuente:'', referido:'', entrega:'Domicilio', pago:'', notas:'' }, LS.get('elx_form') || {}),
   code: LS.get('elx_code') || newCode(),
   sel: {}, tipo: 'Todos', gen: 'Todos', q: '', promoSel: null
 };
@@ -282,7 +280,7 @@ const SHELL = {
       <img src="img/logo.png" alt="ELIXIR Parfums &amp; Decants" width="173" height="78">
       <nav class="social" id="social" aria-label="Redes de ELIXIR" hidden></nav>
       <nav class="fnav" aria-label="Información"><a href="quienes-somos.html">Quiénes somos</a><a href="entregas.html">Entregas y pagos</a><a href="preguntas-frecuentes.html">Preguntas</a><a href="terminos.html">Términos y condiciones</a><a href="privacidad.html">Privacidad</a></nav>
-      <p class="fine">Realiza tu pedido por WhatsApp. Te confirmamos el total, la entrega y el pago.</p>
+      <p class="fine">Realiza tu pedido por WhatsApp. Te confirmamos el total y la entrega. El pago es contra entrega.</p>
     </div>
   </footer>
 <a class="fab" id="fab" href="#" target="_blank" rel="noopener" aria-label="Escribirnos por WhatsApp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 11.5a8.4 8.4 0 0 1-12.3 7.4L3 20.5l1.7-5.5A8.4 8.4 0 1 1 21 11.5z"/><path d="M8.5 10.2h7M8.5 13.2h4.5"/></svg><span>Escríbenos</span></a>
@@ -357,10 +355,6 @@ const SHELL = {
           </div>
         </div>
         <div class="field">
-          <label for="f-nac">Fecha de nacimiento (opcional)</label>
-          <input id="f-nac" type="date" autocomplete="bday">
-        </div>
-        <div class="field">
           <label for="f-prov">Provincia</label>
           <select id="f-prov"></select>
         </div>
@@ -376,7 +370,7 @@ const SHELL = {
           <label for="f-referido">¿Quién te recomendó? (opcional)</label>
           <input id="f-referido" type="text" autocomplete="off" placeholder="Para agradecer su recomendación">
         </div>
-        <p class="note">Usamos tus datos para atender tu pedido y felicitarte en tu cumpleaños. <a href="privacidad.html" target="_blank" rel="noopener">Aviso de privacidad</a></p>
+        <p class="note">Usamos tus datos solo para atender tu pedido. <a href="privacidad.html" target="_blank" rel="noopener">Aviso de privacidad</a></p>
 
         <fieldset class="field">
           <legend>Entrega</legend>
@@ -397,6 +391,7 @@ const SHELL = {
         <div class="field">
           <label for="f-pago">Método de pago</label>
           <select id="f-pago"></select>
+          <p class="hint" style="margin-top:6px">El pago es contra entrega: pagas cuando recibes tu pedido.</p>
         </div>
 
         <div class="field">
@@ -417,6 +412,7 @@ const SHELL = {
   <div class="dfoot" id="dfoot" hidden>
     <div class="errs" id="errs" role="alert" hidden></div>
     <div class="tot"><span id="tot-label">Total (sin envío)</span><b id="tot">$0.00</b></div>
+    <p class="hint" style="text-align:center;margin:-4px 0 2px">Pago contra entrega</p>
     <a class="btn wa" id="send" href="#" target="_blank" rel="noopener noreferrer">Enviar pedido por WhatsApp</a>
     <button class="btn ghost" id="copy" type="button">Copiar pedido</button>
   </div>
@@ -594,7 +590,7 @@ function renderCart(){
   $('#sum').innerHTML = '<div><dt>Subtotal</dt><dd>' + money(t.sub) + '</dd></div>'
     + g.list.filter(r => r.n).map(r => '<div><dt>' + esc(r.pack.nombre) + '</dt><dd>' + pl(r.n, 'Decant Sorpresa', 'Decants Sorpresa') + '</dd></div>').join('')
     + (CONFIG.itbms > 0 ? '<div><dt>ITBMS (' + Math.round(CONFIG.itbms * 100) + '%)</dt><dd>' + money(t.tax) + '</dd></div>' : '')
-    + (function(){ const ev = envioDe(state); return '<div><dt>Envío' + (ev.tipo === 'zona' ? ' · ' + esc(ev.zona.nombre) : '') + '</dt><dd>' + (ev.tipo === 'retiro' ? 'No aplica' : ev.tipo === 'zona' ? envioTxt(ev.monto) : 'Por confirmar') + '</dd></div>'; })();
+    + (function(){ const ev = envioDe(state); return '<div><dt>Envío</dt><dd>' + (ev.tipo === 'retiro' ? 'No aplica' : ev.tipo === 'zona' ? envioTxt(ev.monto) : 'Por confirmar') + '</dd></div>'; })();
   $('#tot').textContent = money(totalFinal(state));
   $('#tot-label').textContent = totalLabel(state);
   updateSend();
@@ -607,7 +603,7 @@ function updateSend(){
   const dom = state.form.entrega === 'Domicilio', ev = envioDe(state);
   $('#sector-box').hidden = !pideSector(state);
   $('#dom-note').hidden = !dom;
-  $('#dom-note').textContent = ev.tipo === 'zona' ? 'Envío ' + ev.zona.nombre + ': ' + envioTxt(ev.monto) + '. Te confirmamos la dirección, la fecha y la hora por WhatsApp.'
+  $('#dom-note').textContent = ev.tipo === 'zona' ? 'Envío: ' + envioTxt(ev.monto) + '. Te confirmamos la dirección, la fecha y la hora por WhatsApp.'
     : ev.tipo === 'otro' ? 'Te cotizamos el envío de tu sector por WhatsApp. Allí también confirmamos la dirección.'
     : pideSector(state) ? 'Elige tu sector para ver el envío. La dirección te la confirmamos por WhatsApp.'
     : 'El envío fuera de la ciudad de Panamá se cotiza. Te confirmamos la dirección y el costo por WhatsApp.';
@@ -616,7 +612,7 @@ function updateSend(){
 }
 function syncForm(){
   const f = state.form;
-  $('#f-nombre').value = f.nombre; $('#f-apellido').value = f.apellido; $('#f-nac').value = f.nac; $('#f-correo').value = f.correo; if(!PROVINCIAS.includes(f.prov)) f.prov = 'Panamá'; $('#f-prov').value = f.prov; if(f.sector !== SECTOR_OTRO && !zonaDeSector(f.sector)) f.sector = ''; $('#f-sector').value = f.sector; $('#f-fuente').value = f.fuente || ''; $('#f-referido').value = f.referido; $('#ref-box').hidden = f.fuente !== F_REC;
+  $('#f-nombre').value = f.nombre; $('#f-apellido').value = f.apellido; $('#f-correo').value = f.correo; if(!PROVINCIAS.includes(f.prov)) f.prov = 'Panamá'; $('#f-prov').value = f.prov; if(f.sector !== SECTOR_OTRO && !zonaDeSector(f.sector)) f.sector = ''; $('#f-sector').value = f.sector; $('#f-fuente').value = f.fuente || ''; $('#f-referido').value = f.referido; $('#ref-box').hidden = f.fuente !== F_REC;
   $('#f-pago').value = f.pago; $('#f-notas').value = f.notas;
   $('#e-dom').checked = f.entrega === 'Domicilio'; $('#e-ret').checked = f.entrega === 'Retiro';
 }
@@ -672,7 +668,7 @@ $('#lines').addEventListener('click', e => {
   saveCart(); renderCart();
 });
 
-const FIELDS = { 'f-nombre':'nombre', 'f-apellido':'apellido', 'f-nac':'nac', 'f-correo':'correo', 'f-prov':'prov', 'f-sector':'sector', 'f-fuente':'fuente', 'f-referido':'referido', 'f-pago':'pago', 'f-notas':'notas' };
+const FIELDS = { 'f-nombre':'nombre', 'f-apellido':'apellido', 'f-correo':'correo', 'f-prov':'prov', 'f-sector':'sector', 'f-fuente':'fuente', 'f-referido':'referido', 'f-pago':'pago', 'f-notas':'notas' };
 $('#form').addEventListener('input', e => {
   const k = FIELDS[e.target.id];
   if(k){ state.form[k] = e.target.value; e.target.classList.remove('bad'); }
@@ -715,10 +711,9 @@ $('#new-order').addEventListener('click', () => {
 $('#f-pago').innerHTML = '<option value="">Elige un método</option>' + CONFIG.pagos.map(p => '<option>' + esc(p) + '</option>').join('');
 $('#f-prov').innerHTML = PROVINCIAS.map(p => '<option>' + esc(p) + '</option>').join('');
 $('#f-sector').innerHTML = '<option value="">Elige tu sector</option>'
-  + ZONAS.map(z => '<optgroup label="' + esc(z.nombre + ' · ' + envioTxt(z.tarifa)) + '">' + z.sectores.map(x => '<option value="' + esc(x) + '">' + esc(x) + '</option>').join('') + '</optgroup>').join('')
+  + ZONAS.map(z => '<optgroup label="' + esc('Envío ' + envioTxt(z.tarifa)) + '">' + z.sectores.map(x => '<option value="' + esc(x) + '">' + esc(x) + '</option>').join('') + '</optgroup>').join('')
   + '<option value="' + SECTOR_OTRO + '">Otro sector (te cotizamos el envío)</option>';
 $('#f-fuente').innerHTML = '<option value="">Elige una opción</option>' + FUENTES.map(p => '<option>' + esc(p) + '</option>').join('');
-$('#f-nac').max = hoy(); $('#f-nac').min = '1920-01-01';
 
 /* ---- FAQ, redes y reseñas ---- */
   (function(){
@@ -768,7 +763,7 @@ document.querySelectorAll('a[data-wa]').forEach(a => { a.href = waUrl(a.dataset.
   const box = $('#zonas'), wrap = $('#zonas-wrap');
   if(box && wrap){
     wrap.hidden = !ZONAS.length;
-    box.innerHTML = ZONAS.map(z => '<div class="zona"><div class="zona-h"><h3>' + esc(z.nombre) + '</h3><span class="zona-p">' + envioTxt(z.tarifa) + '</span></div><p>' + esc(z.sectores.join(', ')) + '.</p></div>').join('');
+    box.innerHTML = ZONAS.map(z => '<div class="zona"><div class="zona-h"><h3>Envío</h3><span class="zona-p">' + envioTxt(z.tarifa) + '</span></div><p>' + esc(z.sectores.join(', ')) + '.</p></div>').join('');
   }
   const fq = $('#faq-envio');
   if(fq && ZONAS.length){
