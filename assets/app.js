@@ -783,9 +783,7 @@ $('#sm-wa').href = waUrl('Hola, tengo una consulta sobre sus perfumes y decants.
   const QS = [
     ['Consultar perfumes y decants', 'Hola, tengo una consulta sobre sus perfumes y decants.'],
     ['Precio del frasco completo', 'Hola, quisiera consultar el precio y la disponibilidad de un frasco completo.'],
-    ['Avísame cuando haya un perfume agotado', 'Hola, quisiera que me avisen cuando esté disponible nuevamente un perfume agotado.'],
-    ['Entregas y pagos', 'Hola, tengo una consulta sobre la entrega o el pago de mi pedido.'],
-    ['Otra pregunta', 'Hola, tengo una pregunta sobre ELIXIR.']
+    ['Entregas y pagos', 'Hola, tengo una consulta sobre la entrega o el pago de mi pedido.']
   ];
   const list = $('#qk-list'), btn = $('#qk-t');
   list.innerHTML = QS.map(q => '<a class="qk-i" href="' + waUrl(q[1]) + '" target="_blank" rel="noopener noreferrer">' + esc(q[0]) + '</a>').join('');
