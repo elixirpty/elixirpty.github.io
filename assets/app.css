@@ -665,3 +665,5 @@ body.has-bar .qk{bottom:calc(78px + 54px + 10px + env(safe-area-inset-bottom))}
 }
 
 .mes-card .m1{white-space:normal;overflow:visible;text-overflow:clip;letter-spacing:.12em;line-height:1.3}
+
+/* Catálogo: chips de categoría más pequeños; género solo tras elegir Árabes o Diseñadores */ #chips .chip{min-height:34px;padding:6px 13px;font-size:11.5px;letter-spacing:1.2px} #chips .chip small{font-size:7.5px} #chips:has(.chip[data-tipo="Todos"][aria-pressed="true"])+#chips-gen,#chips:has(.chip[data-tipo="Nicho"][aria-pressed="true"])+#chips-gen{display:none}
