@@ -971,3 +971,5 @@ if($('#grid')){
   s.async = true; s.dataset.goatcounter = 'https://elixirpty.goatcounter.com/count'; s.src = '//gc.zgo.at/count.js';
   document.body.appendChild(s);
 })();
+
+/* Catálogo: al cambiar de categoría, el filtro de género vuelve a Todos */ document.addEventListener('click',function(e){if(!e.target.closest||!e.target.closest('#chips .chip'))return;var g=document.querySelector('#chips-gen .chip[data-gen="Todos"]');if(g&&g.getAttribute('aria-pressed')!=='true')setTimeout(function(){g.click();},0);});
