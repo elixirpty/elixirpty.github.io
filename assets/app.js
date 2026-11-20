@@ -54,8 +54,7 @@ const CATS = [
 ];
 const GENS = [
   { id:'Hombre', slug:'hombres', nombre:'Hombres', para:'para hombres' },
-  { id:'Mujer', slug:'mujeres', nombre:'Mujeres', para:'para mujeres' },
-  { id:'Unisex', slug:'unisex', nombre:'Unisex', para:'unisex' }
+  { id:'Mujer', slug:'mujeres', nombre:'Mujeres', para:'para mujeres' }
 ];
 
 /* Fotos originales de cada perfume (id -> archivo en img/perfumes). Las fotos nuevas llegan en data/catalogo.js. */
@@ -822,12 +821,11 @@ const CAT_ICON = {"arabes": "<svg viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"c
     $('#mes').hidden = !mes.length;
     box.innerHTML = mes.map(p => {
       const c = CATS.find(x => x.id === p.tipo), out = allOut(p), tone = p.tipo === 'Árabe' ? 'a' : 'd';
-      const href = 'catalogo.html?' + (c ? 'c=' + c.slug + '&' : '') + 'q=' + encodeURIComponent(p.modelo);
-      return '<a class="mes-card' + (out ? ' out' : '') + '" href="' + href + '" aria-label="' + esc(p.marca + ' ' + p.modelo) + '">'
+      return '<div class="mes-card' + (out ? ' out' : '') + '" role="group" aria-label="' + esc(p.marca + ' ' + p.modelo) + '">'
         + '<span class="ph">' + (p.foto ? '<img src="' + esc(p.foto) + '" alt="' + esc(p.marca + ' ' + p.modelo) + '" loading="lazy" decoding="async">' : vial(10, tone)) + '</span>'
         + (out ? '<span class="so">SOLD OUT</span>' : '')
         + '<span class="tx"><span class="m1">' + esc(p.marca) + '</span><span class="m2">' + esc(p.modelo) + '</span>'
-        + '<span class="m3">' + (out ? 'Agotado' : esc(p.genero)) + '</span></span></a>';
+        + '<span class="m3">' + (out ? 'Agotado' : esc(p.genero)) + '</span></span></div>';
     }).join('');
   }
 }
