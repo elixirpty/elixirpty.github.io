@@ -667,3 +667,5 @@ body.has-bar .qk{bottom:calc(78px + 54px + 10px + env(safe-area-inset-bottom))}
 .mes-card .m1{white-space:normal;overflow:visible;text-overflow:clip;letter-spacing:.12em;line-height:1.3}
 
 /* Catálogo: chips de categoría más pequeños; género solo tras elegir Árabes o Diseñadores */ #chips .chip{min-height:34px;padding:6px 13px;font-size:11.5px;letter-spacing:1.2px} #chips .chip small{font-size:7.5px} #chips:has(.chip[data-tipo="Todos"][aria-pressed="true"])+#chips-gen,#chips:has(.chip[data-tipo="Nicho"][aria-pressed="true"])+#chips-gen{display:none}
+
+  /* Sin botón atrás (se usa el gesto o botón del celular), catálogo sin chip Todos, Ver catálogo más grande y línea dorada antes del logo final en inicio */ #back{display:none!important} #chips .chip[data-tipo="Todos"]{display:none} .hero-copy a.cta{min-height:58px;padding:0 40px;font-size:15.5px} body:has(#mes) footer.foot{position:relative;border-top:0} body:has(#mes) footer.foot::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(86%,720px);height:1px;background:linear-gradient(90deg,transparent,#c9a24a 20%,#f3d98b 50%,#c9a24a 80%,transparent)}
