@@ -973,3 +973,5 @@ if($('#grid')){
 })();
 
 /* Catálogo: al cambiar de categoría, el filtro de género vuelve a Todos */ document.addEventListener('click',function(e){if(!e.target.closest||!e.target.closest('#chips .chip'))return;var g=document.querySelector('#chips-gen .chip[data-gen="Todos"]');if(g&&g.getAttribute('aria-pressed')!=='true')setTimeout(function(){g.click();},0);});
+
+/* Catálogo sin botón Todos: tocar otra vez la categoría elegida quita el filtro; al cambiar de categoría el género vuelve a Todos */ document.addEventListener('click',function(e){var c=e.target.closest&&e.target.closest('#chips .chip');if(!c||c.dataset.tipo==='Todos')return;var quitar=c.getAttribute('aria-pressed')==='true';setTimeout(function(){var g=document.querySelector('#chips-gen .chip[data-gen="Todos"]');if(g&&g.getAttribute('aria-pressed')!=='true')g.click();if(quitar){var t=document.querySelector('#chips .chip[data-tipo="Todos"]');if(t)t.click();}},0);},true);
