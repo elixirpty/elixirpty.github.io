@@ -673,3 +673,12 @@ body.has-bar .qk{bottom:calc(78px + 54px + 10px + env(safe-area-inset-bottom))}
 body:has(#mes) footer.foot{margin-top:44px}
 
 /* Entrega inmediata / Bajo pedido */ .entrega{display:flex;align-items:center;gap:6px;margin:6px 0 0;font-size:11px;letter-spacing:.06em;color:#c9b88f} .entrega::before{content:"";width:7px;height:7px;border-radius:50%;background:#c9a24a;flex:none} .entrega.inm{color:#6fd8a2} .entrega.inm::before{background:#43c07f;box-shadow:0 0 0 3px rgba(67,192,127,.18)} .card.out .entrega{display:none}
+
+/* Perfumes del mes con precio y botón · resaltado en catálogo · menos espacio vacío al final (2026-11-23) */
+.mes-card.tap{cursor:pointer}.mes-card.tap:hover{border-color:rgba(224,163,58,.6)}
+.mes-card .m4{display:block;margin-top:4px;font:600 13px var(--body);color:#f1cf7a;letter-spacing:.02em}
+.mes-card .mes-btn{display:block;margin-top:9px;padding:9px 6px;border-radius:999px;background:var(--gold-grad);color:var(--accent-ink,#1a1206);text-align:center;text-decoration:none;font:600 10.5px var(--body);letter-spacing:.14em;text-transform:uppercase;box-shadow:0 4px 14px rgba(224,163,58,.25)}
+#grid .card{scroll-margin-top:90px}
+#grid .card.hl{border-color:#e0a33a;box-shadow:0 0 0 2px #e0a33a,0 0 34px rgba(224,163,58,.45);transition:box-shadow .4s}
+body{padding-bottom:0}body:has(.bar.on){padding-bottom:84px}
+.foot{padding-bottom:calc(84px + env(safe-area-inset-bottom))}
