@@ -3,16 +3,16 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Pide tu perfume · ELIXIR Decants &amp; Parfums</title>
-<meta name="description" content="¿No encuentras tu perfume en el catálogo de ELIXIR? Pídelo y lo buscamos para ti. Perfumes 100 % originales en Panamá.">
+<title>Solicita tu perfume · ELIXIR Decants &amp; Parfums</title>
+<meta name="description" content="¿No encuentras tu perfume en el catálogo de ELIXIR? Solicítalo y lo buscamos para ti. Perfumes 100 % originales en Panamá.">
 <link rel="canonical" href="https://elixirpty.github.io/pide-tu-perfume.html">
 <meta name="robots" content="index,follow,max-image-preview:large">
 <meta name="theme-color" content="#050505">
 <meta property="og:type" content="website">
 <meta property="og:locale" content="es_PA">
 <meta property="og:site_name" content="ELIXIR Decants &amp; Parfums">
-<meta property="og:title" content="Pide tu perfume · ELIXIR Decants &amp; Parfums">
-<meta property="og:description" content="¿No encuentras tu perfume en el catálogo de ELIXIR? Pídelo y lo buscamos para ti. Perfumes 100 % originales en Panamá.">
+<meta property="og:title" content="Solicita tu perfume · ELIXIR Decants &amp; Parfums">
+<meta property="og:description" content="¿No encuentras tu perfume en el catálogo de ELIXIR? Solicítalo y lo buscamos para ti. Perfumes 100 % originales en Panamá.">
 <meta property="og:url" content="https://elixirpty.github.io/pide-tu-perfume.html">
 <meta property="og:image" content="https://elixirpty.github.io/img/og.jpg">
 <meta name="twitter:card" content="summary">
@@ -47,29 +47,49 @@
 .xsteps li{counter-increment:s;text-align:center;font-size:12.5px;line-height:1.4;color:var(--muted,#ab9f8c);border:1px solid var(--line,rgba(212,150,42,.26));border-radius:16px;padding:14px 8px}
 .xsteps li::before{content:counter(s);display:grid;place-items:center;width:30px;height:30px;margin:0 auto 8px;border-radius:50%;border:1px solid #e0a33a;color:#e0a33a;font-family:var(--display,Cinzel,serif)}
 [hidden]{display:none!important}
+.xthumbs{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+@media(max-width:420px){.xthumbs{grid-template-columns:repeat(3,1fr)}}
+.xthumb{position:relative;aspect-ratio:1;border-radius:12px;overflow:hidden;border:1px solid var(--line,rgba(212,150,42,.26));background:rgba(0,0,0,.35)}
+.xthumb img{width:100%;height:100%;object-fit:cover;display:block}
+.xthumb button{position:absolute;top:4px;right:4px;width:28px;height:28px;border-radius:50%;border:0;background:rgba(0,0,0,.72);color:#fff;font-size:16px;line-height:28px;cursor:pointer;padding:0}
+.xadd{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;aspect-ratio:1;border-radius:12px;border:1px dashed #e0a33a;color:#e0a33a;font:inherit;font-size:11px;letter-spacing:.06em;cursor:pointer;background:transparent;text-align:center;padding:4px}
+.xadd b{font-size:24px;line-height:1;font-weight:400}
+.xhelp{font-size:12px;color:var(--muted,#ab9f8c);margin:0}
+.xstep2{text-align:center}
+.xstep2 h2{text-align:center}
+.xstep2 p{margin:0;color:var(--muted,#ab9f8c);font-size:14px;line-height:1.55}
+.xstep2 p b{color:var(--ink,#f4eee2);font-weight:500}
+.xlink{background:none;border:0;color:#e0a33a;text-decoration:underline;font:inherit;font-size:13px;cursor:pointer}
+.xf select:disabled{opacity:.55}
 </style>
 </head>
 <body data-page="sugerir">
 <div id="page">
   <main id="main">
     <section class="wrap pagehead">
-      <h1><span class="ttl">Pide tu perfume</span></h1>
-      <p class="lead">¿No encuentras tu fragancia favorita en nuestro catálogo? Cuéntanos cuál es y la buscamos para ti.</p>
+      <h1><span class="ttl">Solicita tu perfume</span></h1>
+      <p class="lead">¿Buscas una fragancia en especial? Elígela de nuestra lista o escríbela si no está, y te avisamos disponibilidad y precio.</p>
     </section>
     <section class="wrap">
       <ol class="xsteps">
-        <li>Escribe el perfume que buscas</li>
+        <li>Elige o escribe el perfume que buscas</li>
         <li>Envíanos tu solicitud por WhatsApp</li>
         <li>Te avisamos disponibilidad y precio</li>
       </ol>
       <form class="xform" id="xf" novalidate>
         <h2>Tu solicitud</h2>
         <div class="xg2">
-          <label class="xf"><span>Marca <b>*</b></span><input name="marca" placeholder="Ej.: Chanel" autocomplete="off" data-req="marca" data-lbl="marca"></label>
-          <label class="xf"><span>Perfume <b>*</b></span><input name="perfume" placeholder="Ej.: Bleu de Chanel" autocomplete="off" data-req="perfume" data-lbl="perfume"></label>
+          <label class="xf"><span>Marca <b>*</b></span>
+            <select name="marcaSel" id="x-marca"><option value="">Elige la marca</option></select>
+          </label>
+          <label class="xf"><span>Modelo <b>*</b></span>
+            <select name="modeloSel" id="x-modelo" disabled><option value="">Primero elige la marca</option></select>
+          </label>
         </div>
+        <label class="xf" id="x-marca-otra" hidden><span>Escribe la marca <b>*</b></span><input name="marcaOtra" placeholder="Ej.: Chanel" autocomplete="off"></label>
+        <label class="xf" id="x-modelo-otro" hidden><span>Escribe el modelo <b>*</b></span><input name="modeloOtro" placeholder="Ej.: Bleu de Chanel" autocomplete="off"></label>
         <label class="xf"><span>Concentración</span>
-          <select name="conc"><option value="">No estoy seguro</option><option>Eau de Parfum</option><option>Eau de Toilette</option><option>Parfum / Extrait</option><option>Elixir</option></select>
+          <select name="conc" id="x-conc"><option value="">No estoy seguro</option><option>Eau de Parfum</option><option>Eau de Toilette</option><option>Parfum</option><option>Extrait</option><option>Elixir</option></select>
         </label>
         <div class="xf"><span>¿Qué te interesa?</span>
           <div class="xchips">
@@ -78,43 +98,90 @@
             <label><input type="radio" name="tam" value="Frasco completo"><span>Frasco completo</span></label>
           </div>
         </div>
-        <label class="xf"><span>Tu nombre <b>*</b></span><input name="nombre" autocomplete="given-name" data-req="nombre" data-lbl="tu nombre"></label>
-        <label class="xf"><span>Comentario</span><textarea name="coment" placeholder="Opcional: dónde lo probaste, cuántos quieres, etc."></textarea></label>
+        <label class="xf"><span>Tu nombre <b>*</b></span><input name="nombre" autocomplete="name"></label>
+        <label class="xf"><span>Comentario</span><textarea name="coment" placeholder="Opcional: cuántos quieres, para cuándo lo necesitas, etc."></textarea></label>
         <p class="xnote"><b>Sin compromiso.</b> Revisamos con nuestros proveedores y te respondemos por WhatsApp con la disponibilidad y el precio. Solo trabajamos perfumes 100 % originales.</p>
         <p class="xerr" role="alert"></p>
         <button class="cta xsend" type="submit">Enviar solicitud por WhatsApp</button>
       </form>
+      <div class="xform xstep2" id="x-step2" hidden>
+        <h2>¡Solicitud lista!</h2>
+        <p>Abrimos el chat de <b>ELIXIR Decants &amp; Parfums</b> con tu solicitud. Envíala y te responderemos con la disponibilidad y el precio.</p>
+        <button class="cta xsend" type="button" id="x-again">Abrir el chat de nuevo</button>
+        <button class="xlink" type="button" id="x-back">Corregir mis datos</button>
+      </div>
     </section>
   </main>
 </div>
-<script>
-window.__xmsg=function(v){
-  return '¡Hola ELIXIR! Me gustaría pedir un perfume que no está en el catálogo.\n'
-    + 'Perfume: ' + v('marca') + ' ' + v('perfume') + (v('conc') ? ' (' + v('conc') + ')' : '') + '\n'
-    + 'Me interesa: ' + (v('tam') || 'Decant de 10 ml') + '\n'
-    + 'Nombre: ' + v('nombre')
-    + (v('coment') ? '\nComentario: ' + v('coment') : '');
-};
-</script>
 <script src="data/catalogo.js?v=20261120030827"></script>
 <script src="assets/app.js?v=28"></script>
 <script>
+
 (function(){
-  var f=document.getElementById('xf'); if(!f) return;
-  var v=function(n){var e=f.elements[n]; if(!e) return ''; if(e.length!==undefined&&!e.tagName){for(var i=0;i<e.length;i++){if(e[i].checked) return e[i].value;} return '';} return (e.value||'').trim();};
-  var cond=f.querySelectorAll('[data-show]');
-  function upd(){cond.forEach(function(el){var k=el.getAttribute('data-show').split(':');el.hidden=v(k[0]).indexOf(k[1])===-1;});}
-  f.addEventListener('change',upd); upd();
-  f.addEventListener('submit',function(e){
-    e.preventDefault();
-    var err=f.querySelector('.xerr'), falta=[];
-    f.querySelectorAll('[data-req]').forEach(function(el){ if(!v(el.getAttribute('data-req'))) falta.push(el.getAttribute('data-lbl')); });
-    if(falta.length){ err.textContent='Completa: '+falta.join(', ')+'.'; return; }
-    err.textContent='';
-    var msg=window.__xmsg(v);
-    var url=(typeof waUrl==='function')?waUrl(msg):('https://wa.me/'+((window.ELIXIR_CATALOGO||{}).whatsapp||'')+'?text='+encodeURIComponent(msg));
-    window.open(url,'_blank','noopener');
+  var f = document.getElementById('xf'); if (!f) return;
+  var OTRA = '__otra__', MAX = 5;
+  var $ = function(id){ return document.getElementById(id); };
+  var selM = $('x-marca'), selMo = $('x-modelo'), boxMO = $('x-marca-otra'), boxOO = $('x-modelo-otro');
+  var perf = ((window.ELIXIR_CATALOGO || {}).perfumes || []);
+  var porMarca = {};
+  perf.forEach(function(p){ if (!p.marca || !p.modelo) return; (porMarca[p.marca] = porMarca[p.marca] || []).push(p); });
+  var marcas = Object.keys(porMarca).sort(function(a, b){ return a.localeCompare(b, 'es'); });
+  var opt = function(v, t){ var o = document.createElement('option'); o.value = v; o.textContent = t; return o; };
+  marcas.forEach(function(m){ selM.appendChild(opt(m, m)); });
+  selM.appendChild(opt(OTRA, 'Otra marca (escribirla)'));
+
+  function llenarModelos(){
+    var m = selM.value; selMo.innerHTML = '';
+    boxMO.hidden = m !== OTRA;
+    if (!m) { selMo.appendChild(opt('', 'Primero elige la marca')); selMo.disabled = true; boxOO.hidden = true; return; }
+    selMo.disabled = false;
+    if (m === OTRA) { selMo.appendChild(opt(OTRA, 'Otro modelo (escribirlo)')); selMo.value = OTRA; boxOO.hidden = false; return; }
+    selMo.appendChild(opt('', 'Elige el modelo'));
+    porMarca[m].slice().sort(function(a, b){ return a.modelo.localeCompare(b.modelo, 'es'); })
+      .forEach(function(p){ selMo.appendChild(opt(p.id, p.modelo)); });
+    selMo.appendChild(opt(OTRA, 'Otro modelo (escribirlo)'));
+    boxOO.hidden = true;
+  }
+  selM.addEventListener('change', llenarModelos);
+  selMo.addEventListener('change', function(){
+    boxOO.hidden = selMo.value !== OTRA;
+    var p = perf.filter(function(x){ return x.id === selMo.value; })[0];
+    if (p) {
+      var c = $('x-conc'), ok = [].some.call(c.options, function(o){ return o.value === p.conc; });
+      if (ok) c.value = p.conc;
+    }
   });
+
+  var val = function(n){ var e = f.elements[n]; return e ? String(e.value || '').trim() : ''; };
+  function marca(){ return selM.value === OTRA ? val('marcaOtra') : selM.value; }
+  function modelo(){
+    if (selMo.value === OTRA) return val('modeloOtro');
+    var p = perf.filter(function(x){ return x.id === selMo.value; })[0]; return p ? p.modelo : '';
+  }
+  function mensaje(){
+    return '¡Hola ELIXIR! Quiero solicitar un perfume.\n\n'
+      + '* Nombre: ' + val('nombre') + '\n\n'
+      + '* Perfume: ' + marca() + ' ' + modelo() + (val('conc') ? ' (' + val('conc') + ')' : '') + '\n'
+      + '* Me interesa: ' + (val('tam') || 'Decant de 10 ml')
+      + (val('coment') ? '\n* Comentario: ' + val('coment') : '');
+  }
+  var wa = function(t){ return (typeof waUrl === 'function') ? waUrl(t) : 'https://wa.me/' + ((window.ELIXIR_CATALOGO || {}).whatsapp || '') + '?text=' + encodeURIComponent(t); };
+  var abrirChat = function(){ window.open(wa(mensaje()), '_blank', 'noopener'); };
+
+  f.addEventListener('submit', function(e){
+    e.preventDefault();
+    var falta = [];
+    if (!marca()) falta.push('la marca');
+    if (!modelo()) falta.push('el modelo');
+    if (!val('nombre')) falta.push('tu nombre');
+    var err = f.querySelector('.xerr');
+    if (falta.length) { err.textContent = 'Falta: ' + falta.join(', ') + '.'; return; }
+    err.textContent = '';
+    abrirChat();
+    f.hidden = true; $('x-step2').hidden = false; $('x-step2').scrollIntoView({ behavior:'smooth', block:'start' });
+  });
+  $('x-again').addEventListener('click', abrirChat);
+  $('x-back').addEventListener('click', function(){ $('x-step2').hidden = true; f.hidden = false; f.scrollIntoView({ behavior:'smooth', block:'start' }); });
 })();
 </script>
 </body>
