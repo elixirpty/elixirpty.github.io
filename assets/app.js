@@ -144,6 +144,7 @@ function buildMessage(st){
   const its = cartItems(st.cart), t = totals(its), f = st.form, L = [];
   const nF = its.filter(i => Number(i.ml) >= 100).length, tipoP = !nF ? 'Decants' : (nF === its.length ? 'Perfumes' : 'Decants y Perfumes');
   L.push('¡Hola ELIXIR!, Quiero hacer este pedido de ' + tipoP + '.', '');
+  L.push('* Pedido: ' + (st.code || '(se asigna al enviar)'), '');
   L.push('* Nombre: ' + (f.nombre.trim() || '-'));
   L.push('* Apellido: ' + (f.apellido.trim() || '-'));
   L.push('* Provincia: ' + (f.prov || PROVINCIAS[0]));
@@ -152,16 +153,15 @@ function buildMessage(st){
   if(f.fuente === F_REC && f.referido.trim()) L.push('* Referido por: ' + f.referido.trim());
   L.push('* Entrega: ' + f.entrega);
   const ev = envioDe(st);
-  L.push('* Pago: ' + (f.pago || '-'), '');
-  L.push('Productos:');
+  L.push('* Pago: ' + (f.pago || '-'));
+  if(ev.tipo !== 'retiro') L.push('* Envío: por confirmar');
+  L.push('', '', 'Productos:', '');
   its.forEach((i, n) => L.push((n + 1) + ') ' + i.p.marca + ' ' + i.p.modelo + ' - ' + nameOf(i.p, i.ml) + ' x' + i.q + ' - ' + money(i.total)));
   gift(its).list.filter(r => r.n).forEach(r => L.push(r.pack.nombre + ': ' + pl(r.n, 'Decant Sorpresa', 'Decants Sorpresa') + ' de 2 ml (' + (r.pack.cat ? 'perfume ' + CAT_ADJ[r.pack.cat] + ', ' : '') + 'la elige ' + CONFIG.tienda + ')'));
   L.push('');
   L.push('Subtotal: ' + money(t.sub));
   if(CONFIG.itbms > 0) L.push('ITBMS (' + Math.round(CONFIG.itbms * 100) + '%): ' + money(t.tax));
-  if(ev.tipo !== 'retiro') L.push('Envío: por confirmar');
   L.push(totalLabel(st) + ': ' + money(totalFinal(st)));
-  L.push('Pedido: ' + (st.code || '(se asigna al enviar)'));
   if(f.notas.trim()) L.push('', 'Notas: ' + f.notas.trim().replace(/\s*\n\s*/g, ' '));
   return L.join('\n');
 }
