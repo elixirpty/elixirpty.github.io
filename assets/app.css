@@ -671,3 +671,5 @@ body.has-bar .qk{bottom:calc(78px + 54px + 10px + env(safe-area-inset-bottom))}
   /* Sin botón atrás (se usa el gesto o botón del celular), catálogo sin chip Todos, Ver catálogo más grande y línea dorada antes del logo final en inicio */ #back{display:none!important} #chips .chip[data-tipo="Todos"]{display:none} .hero-copy a.cta{min-height:58px;padding:0 40px;font-size:15.5px} body:has(#mes) footer.foot{position:relative;border-top:0} body:has(#mes) footer.foot::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:min(86%,720px);height:1px;background:linear-gradient(90deg,transparent,#c9a24a 20%,#f3d98b 50%,#c9a24a 80%,transparent)}
 
 body:has(#mes) footer.foot{margin-top:44px}
+
+/* Entrega inmediata / Bajo pedido */ .entrega{display:flex;align-items:center;gap:6px;margin:6px 0 0;font-size:11px;letter-spacing:.06em;color:#c9b88f} .entrega::before{content:"";width:7px;height:7px;border-radius:50%;background:#c9a24a;flex:none} .entrega.inm{color:#6fd8a2} .entrega.inm::before{background:#43c07f;box-shadow:0 0 0 3px rgba(67,192,127,.18)} .card.out .entrega{display:none}
