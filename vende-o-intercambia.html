@@ -73,7 +73,7 @@
     <section class="wrap">
       <ol class="xsteps">
         <li>Cuéntanos qué perfume tienes y agrega sus fotos</li>
-        <li>Envíanos la solicitud y las fotos por WhatsApp</li>
+        <li>Envíalo todo junto por WhatsApp</li>
         <li>Te hacemos una oferta sin compromiso</li>
       </ol>
       <form class="xform" id="xf" novalidate>
@@ -120,17 +120,16 @@
         <label class="xf"><span>Tu nombre <b>*</b></span><input name="nombre" autocomplete="given-name"></label>
         <label class="xf"><span>Comentario</span><textarea name="coment" placeholder="Opcional: año de compra, dónde lo compraste, precio que esperas, etc."></textarea></label>
         <p class="xnote"><b>Cómo evaluamos:</b> solo aceptamos perfumes 100 % originales. Revisamos el frasco, la caja, el código de lote y cuánto le queda. La evaluación no te compromete a nada: el precio o el cambio se acuerdan contigo por WhatsApp.</p>
+        <p class="xnote" id="x-como"><b>Al enviar:</b> se abrirá el menú para compartir de tu celular. Elige <b>WhatsApp</b> y luego el chat de <b>ELIXIR Decants &amp; Parfums</b>: tu mensaje y tus fotos llegan juntos en un solo envío.</p>
         <p class="xerr" role="alert"></p>
         <button class="cta xsend" type="submit">Solicitar evaluación por WhatsApp</button>
       </form>
       <div class="xform xstep2" id="x-step2" hidden>
-        <h2>Paso 2: envía tus fotos</h2>
-        <p>Ya abrimos el chat de ELIXIR con tu solicitud. Ahora toca el botón de abajo, elige <b>WhatsApp</b>, busca el chat de <b>ELIXIR Decants &amp; Parfums</b> y toca enviar.</p>
+        <h2 id="x-s2t">¡Solicitud lista!</h2>
+        <p id="x-s2p">Revisa en el chat de <b>ELIXIR Decants &amp; Parfums</b> que se hayan enviado tu mensaje y tus fotos. Te responderemos con tu evaluación.</p>
         <div class="xthumbs" id="x-thumbs2"></div>
-        <button class="cta xsend" type="button" id="x-share">Enviar mis fotos por WhatsApp</button>
-        <p id="x-noshare" hidden>Si las fotos no se enviaron, abre el chat de ELIXIR en WhatsApp y adjúntalas con el clip 📎 o la cámara.</p>
-        <p id="x-ok" hidden><b>¡Listo!</b> Revisa en el chat de ELIXIR que tus fotos se hayan enviado. Te responderemos con tu evaluación.</p>
-        <button class="xlink" type="button" id="x-again">Volver a abrir el chat de ELIXIR</button>
+        <button class="cta xsend" type="button" id="x-share">Enviar de nuevo</button>
+        <button class="xlink" type="button" id="x-again">¿No te llegó al chat de ELIXIR? Envía el mensaje aquí y adjunta las fotos con el clip 📎</button>
         <button class="xlink" type="button" id="x-back">Corregir mis datos</button>
       </div>
     </section>
@@ -239,7 +238,7 @@
       + (op !== 'Vender' && val('cambio') ? 'Me gustaría a cambio: ' + val('cambio') + '\n' : '')
       + 'Nombre: ' + val('nombre') + '\n'
       + (val('coment') ? 'Comentario: ' + val('coment') + '\n' : '')
-      + '\nTe envío ' + fotos.length + (fotos.length === 1 ? ' foto' : ' fotos') + ' del perfume a continuación.';
+      + '\nAdjunto ' + fotos.length + (fotos.length === 1 ? ' foto' : ' fotos') + ' del perfume.';
   }
   var wa = function(t){ return (typeof waUrl === 'function') ? waUrl(t) : 'https://wa.me/' + ((window.ELIXIR_CATALOGO || {}).whatsapp || '') + '?text=' + encodeURIComponent(t); };
   var abrirChat = function(){ window.open(wa(mensaje()), '_blank', 'noopener'); };
@@ -256,18 +255,25 @@
     var err = f.querySelector('.xerr');
     if (falta.length) { err.textContent = 'Falta: ' + falta.join(', ') + '.'; return; }
     err.textContent = '';
+    compartir();
+  });
+  function puedeCompartir(){ var files = fotos.map(function(x){ return x.file; }); try { return !!(navigator.share && navigator.canShare && navigator.canShare({ files:files, text:'x' })); } catch (e) { return false; } }
+  function listo(enviado, falta){
     pintar($('x-thumbs2'), false);
-    var files = fotos.map(function(x){ return x.file; });
-    var puede = !!(navigator.canShare && navigator.canShare({ files:files }));
-    $('x-share').hidden = !puede; $('x-noshare').hidden = puede;
+    $('x-share').hidden = !puedeCompartir();
+    if (!enviado) { $('x-s2t').textContent = 'Último paso: adjunta tus fotos'; $('x-s2p').innerHTML = falta ? 'No se pudo compartir desde aquí. Toca el enlace de abajo para abrir el chat de <b>ELIXIR Decants &amp; Parfums</b> con tu mensaje, envíalo y adjunta tus fotos con el clip 📎.' : 'Abrimos el chat de <b>ELIXIR Decants &amp; Parfums</b> con tu mensaje. Envíalo y luego adjunta tus fotos con el clip 📎 o la cámara.'; }
     f.hidden = true; $('x-step2').hidden = false; $('x-step2').scrollIntoView({ behavior:'smooth', block:'start' });
-    abrirChat();
-  });
-  $('x-share').addEventListener('click', function(){
+  }
+  /* Un solo envío: las fotos y el mensaje van juntos (el texto queda como descripción de la foto) */
+  function compartir(){
+    if (!puedeCompartir()) { abrirChat(); listo(false); return; }
     var files = fotos.map(function(x){ return x.file; });
-    /* Solo las fotos, sin texto: si se comparten fotos con texto, WhatsApp a veces envía solo el texto y descarta las fotos */
-    navigator.share({ files:files }).then(function(){ $('x-ok').hidden = false; }).catch(function(e){ if (e && e.name !== 'AbortError') $('x-noshare').hidden = false; });
-  });
+    navigator.share({ files:files, text:mensaje() }).then(function(){ listo(true); }).catch(function(e){
+      if (e && e.name === 'AbortError') return;          // el cliente cerró el menú: se queda en el formulario
+      listo(false, true);
+    });
+  }
+  $('x-share').addEventListener('click', compartir);
   $('x-again').addEventListener('click', abrirChat);
   $('x-back').addEventListener('click', function(){ $('x-step2').hidden = true; f.hidden = false; f.scrollIntoView({ behavior:'smooth', block:'start' }); });
 })();
