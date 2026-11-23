@@ -177,15 +177,16 @@
   }
   function mensaje(){
     var op = val('op') || 'Vender';
-    return '¡Hola ELIXIR! Quiero solicitar una evaluación de mi perfume.\n'
-      + 'Quiero: ' + op + '\n'
-      + 'Perfume: ' + marca() + ' ' + modelo() + (val('conc') ? ' (' + val('conc') + ')' : '') + '\n'
-      + 'Tamaño del frasco: ' + val('ml') + ' ml\n'
-      + 'Le queda: ' + val('queda') + '\n'
-      + 'Tiene caja: ' + (val('caja') || 'Sí') + ' · Factura o comprobante: ' + (val('fact') || 'No') + '\n'
-      + (op !== 'Vender' && val('cambio') ? 'Me gustaría a cambio: ' + val('cambio') + '\n' : '')
-      + 'Nombre: ' + val('nombre') + '\n'
-      + (val('coment') ? 'Comentario: ' + val('coment') + '\n' : '');
+    return '¡Hola ELIXIR! Quiero solicitar una evaluación de mi perfume.\n\n'
+      + '* Nombre: ' + val('nombre') + '\n\n'
+      + '* Quiero: ' + op + '\n\n'
+      + '* Perfume: ' + marca() + ' ' + modelo() + (val('conc') ? ' (' + val('conc') + ')' : '') + '\n'
+      + '* Tamaño del frasco: ' + val('ml') + ' ml\n'
+      + '* Le queda: ' + val('queda') + '\n'
+      + '* Tiene caja: ' + (val('caja') || 'Sí') + '\n'
+      + '* Tiene Factura o comprobante: ' + (val('fact') || 'No')
+      + (op !== 'Vender' && val('cambio') ? '\n* Me gustaría a cambio: ' + val('cambio') : '')
+      + (val('coment') ? '\n* Comentario: ' + val('coment') : '');
   }
   var wa = function(t){ return (typeof waUrl === 'function') ? waUrl(t) : 'https://wa.me/' + ((window.ELIXIR_CATALOGO || {}).whatsapp || '') + '?text=' + encodeURIComponent(t); };
   var abrirChat = function(){ window.open(wa(mensaje()), '_blank', 'noopener'); };
