@@ -125,10 +125,11 @@
       </form>
       <div class="xform xstep2" id="x-step2" hidden>
         <h2>Paso 2: envía tus fotos</h2>
-        <p>Ya abrimos el chat de ELIXIR con tu solicitud. Ahora toca el botón, elige <b>WhatsApp</b> y luego el chat de <b>ELIXIR</b> para enviar tus fotos.</p>
+        <p>Ya abrimos el chat de ELIXIR con tu solicitud. Ahora toca el botón de abajo, elige <b>WhatsApp</b>, busca el chat de <b>ELIXIR Decants &amp; Parfums</b> y toca enviar.</p>
         <div class="xthumbs" id="x-thumbs2"></div>
         <button class="cta xsend" type="button" id="x-share">Enviar mis fotos por WhatsApp</button>
-        <p id="x-noshare" hidden>Tu navegador no permite enviar las fotos desde aquí. Abre el chat de ELIXIR en WhatsApp y adjúntalas con el clip 📎.</p>
+        <p id="x-noshare" hidden>Si las fotos no se enviaron, abre el chat de ELIXIR en WhatsApp y adjúntalas con el clip 📎 o la cámara.</p>
+        <p id="x-ok" hidden><b>¡Listo!</b> Revisa en el chat de ELIXIR que tus fotos se hayan enviado. Te responderemos con tu evaluación.</p>
         <button class="xlink" type="button" id="x-again">Volver a abrir el chat de ELIXIR</button>
         <button class="xlink" type="button" id="x-back">Corregir mis datos</button>
       </div>
@@ -264,7 +265,8 @@
   });
   $('x-share').addEventListener('click', function(){
     var files = fotos.map(function(x){ return x.file; });
-    navigator.share({ files:files, text:'Fotos para la evaluación de mi ' + marca() + ' ' + modelo() + ' (' + val('nombre') + ')' }).catch(function(){});
+    /* Solo las fotos, sin texto: si se comparten fotos con texto, WhatsApp a veces envía solo el texto y descarta las fotos */
+    navigator.share({ files:files }).then(function(){ $('x-ok').hidden = false; }).catch(function(e){ if (e && e.name !== 'AbortError') $('x-noshare').hidden = false; });
   });
   $('x-again').addEventListener('click', abrirChat);
   $('x-back').addEventListener('click', function(){ $('x-step2').hidden = true; f.hidden = false; f.scrollIntoView({ behavior:'smooth', block:'start' }); });
