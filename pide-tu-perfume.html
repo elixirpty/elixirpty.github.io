@@ -162,7 +162,8 @@
     return '¡Hola ELIXIR! Quiero solicitar un perfume.\n\n'
       + '* Nombre: ' + val('nombre') + '\n\n'
       + '* Marca: ' + marca() + '\n'
-      + '* Modelo: ' + modelo() + (val('conc') ? ' (' + val('conc') + ')' : '') + '\n'
+      + '* Modelo: ' + modelo() + '\n'
+      + '* Tipo de Concentración: ' + (val('conc') || 'No estoy seguro') + '\n'
       + '* Me interesa: ' + (val('tam') || 'Decant de 10 ml')
       + (val('coment') ? '\n* Comentario: ' + val('coment') : '');
   }
