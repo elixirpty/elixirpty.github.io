@@ -1,5 +1,5 @@
 window.ELIXIR_CATALOGO = {
-"actualizado": "2026-11-23T08:14:07Z",
+"actualizado": "2026-11-23T14:30:29Z",
 "whatsapp": "50762003794",
 "itbms": 0,
 "preciosProvisionales": false,
@@ -57,7 +57,7 @@ window.ELIXIR_CATALOGO = {
 {"id":"PF-049","sku":"ELX-AFN-049","marca":"Afnan","modelo":"9pm Night Out","conc":"Eau de Parfum","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":6,"10":11},"inm":1,"foto":"fotos/PF-049-fb5b63c3.jpg"},
 {"id":"PF-050","sku":"ELX-LAT-050","marca":"Lattafa","modelo":"Asad Bourbon","conc":"Eau de Parfum","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":4,"10":7},"inm":1,"foto":"fotos/PF-050-7c8243f4.jpg"},
 {"id":"PF-051","sku":"ELX-LAT-051","marca":"Lattafa","modelo":"Asad Elixir","conc":"Eau de Parfum","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":5,"10":9},"inm":1,"foto":"fotos/PF-051-9481ca6d.jpg"},
-{"id":"PF-052","sku":"ELX-ALH-052","marca":"Al Haramain","modelo":"Exclusive Oud - Blue","conc":"Extrait","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":6,"10":11},"agota":[5,10],"foto":"fotos/PF-052-702320f8.jpg"},
+{"id":"PF-052","sku":"ELX-ALH-052","marca":"Al Haramain","modelo":"Exclusive Oud - Blue","conc":"Extrait","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":6,"10":11},"foto":"fotos/PF-052-702320f8.jpg"},
 {"id":"PF-053","sku":"ELX-JEA-053","marca":"Jean Paul Gaultier","modelo":"Le Male Elixir","conc":"Eau de Parfum","genero":"Hombre","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":8,"10":15},"foto":"fotos/PF-053-472837d4.jpg"},
 {"id":"PF-054","sku":"ELX-ARM-054","marca":"Armaf","modelo":"Club de Nuit - Maleka","conc":"Eau de Parfum","genero":"Mujer","tipo":"\u00c1rabe","ml":100,"precios":{"5":5,"10":9},"foto":"fotos/PF-054-c52cb536.jpg"},
 {"id":"PF-055","sku":"ELX-LAT-055","marca":"Lattafa","modelo":"Yara","conc":"Eau de Parfum","genero":"Mujer","tipo":"\u00c1rabe","ml":100,"precios":{"5":4,"10":7},"inm":1,"foto":"fotos/PF-055-31c04d05.jpg"},
@@ -66,8 +66,7 @@ window.ELIXIR_CATALOGO = {
 {"id":"PF-058","sku":"ELX-LAT-058","marca":"Lattafa","modelo":"Eclaire","conc":"Eau de Parfum","genero":"Mujer","tipo":"\u00c1rabe","ml":100,"precios":{"5":5,"10":9},"foto":"fotos/PF-058-9bf30608.jpg"},
 {"id":"PF-059","sku":"ELX-LAT-059","marca":"Lattafa","modelo":"Bon Bon","conc":"Eau de Parfum","genero":"Mujer","tipo":"\u00c1rabe","ml":100,"precios":{"5":5,"10":9},"foto":"fotos/PF-059-de342f32.jpg"},
 {"id":"PF-060","sku":"ELX-ARM-060","marca":"Armaf","modelo":"Club de Nuit Untold","conc":"Eau de Parfum","genero":"Mujer","tipo":"\u00c1rabe","ml":100,"precios":{"5":5,"10":9},"inm":1,"foto":"fotos/PF-060-b6eab7b1.jpg"},
-{"id":"PF-061","sku":"ELX-VAL-061","marca":"Valentino","modelo":"Donna Born in Roma","conc":"Eau de Parfum","genero":"Mujer","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":9,"10":17},"foto":"fotos/PF-061-31702a57.jpg"},
-{"id":"PF-062","sku":"ELX-VER-062","marca":"Versace","modelo":"Eros","conc":"Eau de Parfum","genero":"Hombre","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":4,"10":7}}
+{"id":"PF-061","sku":"ELX-VAL-061","marca":"Valentino","modelo":"Donna Born in Roma","conc":"Eau de Parfum","genero":"Mujer","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":9,"10":17},"foto":"fotos/PF-061-31702a57.jpg"}
 ],
 "packs": []
 };
