@@ -1,0 +1,41 @@
+/* Vitrina de categorías (Árabes · Diseñador · Nicho) */
+.has-vit #chips{display:none}
+.vit{position:relative;margin:6px 0 18px;border-radius:20px;overflow:hidden;height:clamp(360px,92vw,470px);
+  background:#0b0907 url(../img/vitrina/piedra.webp) center/cover;box-shadow:inset 0 0 0 1px rgba(212,150,42,.28),0 18px 40px rgba(0,0,0,.45);isolation:isolate}
+.vit:before{content:"";position:absolute;inset:0;background:radial-gradient(120% 70% at 50% -10%,rgba(0,0,0,0) 0,rgba(0,0,0,.55) 70%),linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.55));z-index:0;pointer-events:none}
+.vit-row{position:absolute;inset:16px 12px 58px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;z-index:1;transition:opacity .45s ease,transform .7s cubic-bezier(.7,0,.2,1)}
+.vit-cap{position:absolute;left:0;right:0;bottom:14px;text-align:center;z-index:1;font:500 11px/1.2 Jost,sans-serif;letter-spacing:.34em;text-transform:uppercase;color:#bfae8a;transition:opacity .4s}
+.vit-cap b{display:block;font:600 17px Cinzel,serif;letter-spacing:.14em;color:#f1cf7a;margin-bottom:4px}
+.nich{all:unset;box-sizing:border-box;position:relative;cursor:pointer;border-radius:12px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;
+  background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.6)),url(../img/vitrina/piedra.webp) center/220%;
+  box-shadow:inset 0 0 0 1px rgba(212,150,42,.35),inset 0 14px 30px rgba(0,0,0,.65),0 0 0 1px rgba(0,0,0,.4);-webkit-tap-highlight-color:transparent;transition:transform .35s ease,box-shadow .35s}
+.nich:before{content:"";position:absolute;left:50%;top:0;width:46%;height:3px;transform:translateX(-50%);border-radius:0 0 6px 6px;background:#ffe6a8;box-shadow:0 0 14px 3px rgba(255,214,140,.7);z-index:2}
+.nich:after{content:"";position:absolute;inset:0;background:radial-gradient(70% 55% at 50% 0,rgba(255,214,140,.42),rgba(255,214,140,.08) 55%,transparent 75%),linear-gradient(180deg,transparent 60%,rgba(0,0,0,.55));z-index:1;pointer-events:none;animation:vit-luz 4.5s ease-in-out infinite}
+.nich img{position:relative;z-index:1;width:auto;height:50%;max-width:80%;object-fit:contain;margin-bottom:27%;filter:drop-shadow(0 12px 14px rgba(0,0,0,.7));-webkit-box-reflect:below 3px linear-gradient(transparent 62%,rgba(255,255,255,.22))}
+.nich .lbl{position:absolute;left:0;right:0;bottom:9px;z-index:3;text-align:center;font:600 11px Cinzel,serif;letter-spacing:.16em;text-transform:uppercase;color:#f4eee2;text-shadow:0 1px 6px #000}
+.nich .lbl small{display:block;font:500 8px Jost,sans-serif;letter-spacing:.22em;color:#e0a33a;margin-top:2px}
+.nich:active{transform:scale(.97)}
+.nich.soon img{filter:drop-shadow(0 12px 14px rgba(0,0,0,.7)) brightness(.55) saturate(.7)}
+.nich.soon:after{opacity:.45}
+@keyframes vit-luz{0%,100%{opacity:.92}50%{opacity:1}}
+/* escena ampliada */
+.vit-stage{position:absolute;inset:0;z-index:4;visibility:hidden;background:#0b0907 url(../img/vitrina/piedra.webp) center/cover}
+.vit-stage:before{content:"";position:absolute;inset:0;background:radial-gradient(60% 55% at 50% 0,rgba(255,214,140,.38),rgba(255,214,140,.06) 55%,transparent 75%),linear-gradient(180deg,rgba(0,0,0,.25) 25%,rgba(0,0,0,.85) 74%)}
+.vit-stage:after{content:"";position:absolute;left:50%;top:0;width:30%;height:3px;transform:translateX(-50%);border-radius:0 0 8px 8px;background:#ffe6a8;box-shadow:0 0 22px 5px rgba(255,214,140,.7)}
+.vit.open .vit-stage{visibility:visible}
+.vit.open .vit-row,.vit.open .vit-cap{opacity:0}
+.vit-bottle{position:absolute;left:50%;top:7%;height:43%;transform:translateX(-50%);filter:drop-shadow(0 18px 20px rgba(0,0,0,.75));-webkit-box-reflect:below 4px linear-gradient(transparent 70%,rgba(255,255,255,.2))}
+.vit-stage.soon .vit-bottle{filter:drop-shadow(0 18px 20px rgba(0,0,0,.75)) brightness(.6)}
+.vit-txt{position:absolute;left:18px;right:18px;bottom:16px;text-align:center;opacity:0;transform:translateY(14px);transition:opacity .45s ease .35s,transform .45s ease .35s}
+.vit.shown .vit-txt{opacity:1;transform:none}
+.vit-k{font:500 10px Jost,sans-serif;letter-spacing:.34em;text-transform:uppercase;color:#e0a33a}
+.vit-t{margin:4px 0 2px;font:600 30px/1.05 Cinzel,serif;letter-spacing:.08em;color:#f4eee2}
+.vit-t em{font-style:normal;background:linear-gradient(180deg,#f8e2a0,#d4952a);-webkit-background-clip:text;background-clip:text;color:transparent}
+.vit-d{font:400 13px/1.45 Jost,sans-serif;color:#d8ccb4;margin:0 auto 12px;max-width:320px}
+.vit-b{display:flex;gap:10px;justify-content:center}
+.vit-b button{all:unset;cursor:pointer;padding:10px 20px;border-radius:999px;font:600 12px Jost,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#1a1206;background:linear-gradient(135deg,#f6dc8e,#d79a2c 55%,#f1cf7a);box-shadow:0 6px 16px rgba(214,150,40,.28)}
+.vit-b button.ghost{color:#f1cf7a;background:none;box-shadow:inset 0 0 0 1.5px rgba(224,163,58,.6)}
+.vit-back{all:unset;cursor:pointer;position:absolute;left:12px;top:12px;z-index:5;padding:7px 12px;border-radius:999px;font:500 11px Jost,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#f1cf7a;background:rgba(0,0,0,.45);box-shadow:inset 0 0 0 1px rgba(224,163,58,.45);opacity:0;transition:opacity .3s .3s}
+.vit.shown .vit-back{opacity:1}
+@media (min-width:760px){.vit{height:440px}.vit-row{inset:22px 22% 64px}.vit-bottle{top:10%;height:58%}.vit-t{font-size:38px}}
+@media (prefers-reduced-motion:reduce){.nich:after{animation:none}.vit-row,.vit-txt{transition:none}}
