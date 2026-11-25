@@ -1,5 +1,5 @@
 window.ELIXIR_CATALOGO = {
-"actualizado": "2026-11-23T21:43:01Z",
+"actualizado": "2026-11-25T22:06:57Z",
 "whatsapp": "50762003794",
 "itbms": 0,
 "preciosProvisionales": false,
@@ -8,8 +8,8 @@ window.ELIXIR_CATALOGO = {
 "envio": {"zonas":[{"id":"z1","nombre":"Zona 1 \u00b7 Centro","tarifa":3,"sectores":["Bella Vista","Obarrio","El Cangrejo","Marbella","San Francisco","Punta Pac\u00edfica","Paitilla","Calidonia","Casco Antiguo"]},{"id":"z2","nombre":"Zona 2 \u00b7 Cercana","tarifa":4,"sectores":["Betania","Pueblo Nuevo","R\u00edo Abajo","Albrook","Clayton","Anc\u00f3n","Costa del Este","Juan D\u00edaz","Pedregal"]},{"id":"z3","nombre":"Zona 3 \u00b7 Alejada","tarifa":5,"sectores":["San Miguelito","Tocumen","24 de Diciembre","Las Cumbres","Chilibre","Pacora"]}]},
 "perfumes": [
 {"id":"PF-040","sku":"ELX-AFN-040","marca":"Afnan","modelo":"9am","conc":"Eau de Parfum","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":4,"10":7},"inm":1,"foto":"fotos/PF-040-ed1f9771.webp"},
-{"id":"PF-014","sku":"ELX-AFN-014","marca":"Afnan","modelo":"9PM","conc":"Eau de Parfum","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":4,"10":7},"inm":1,"foto":"fotos/PF-014-bc10782d.webp"},
-{"id":"PF-026","sku":"ELX-AFN-026","marca":"Afnan","modelo":"9pm Elixir","conc":"Elixir","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":6,"10":11},"inm":1,"foto":"fotos/PF-026-91c41167.webp"},
+{"id":"PF-014","sku":"ELX-AFN-014","marca":"Afnan","modelo":"9PM Black","conc":"Eau de Parfum","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":4,"10":7},"inm":1,"foto":"fotos/PF-014-bc10782d.webp"},
+{"id":"PF-026","sku":"ELX-AFN-026","marca":"Afnan","modelo":"9pm Elixir","conc":"Elixir","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":5,"10":9},"inm":1,"foto":"fotos/PF-026-91c41167.webp"},
 {"id":"PF-049","sku":"ELX-AFN-049","marca":"Afnan","modelo":"9pm Night Out","conc":"Eau de Parfum","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":6,"10":11},"inm":1,"foto":"fotos/PF-049-fb5b63c3.webp"},
 {"id":"PF-039","sku":"ELX-AFN-039","marca":"Afnan","modelo":"Turathi Blue","conc":"Eau de Parfum","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":5,"10":9},"foto":"fotos/PF-039-587cfe97.webp"},
 {"id":"PF-033","sku":"ELX-ALH-033","marca":"Al Haramain","modelo":"Amber Oud - Gold Edition","conc":"Eau de Parfum","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":5,"10":9},"inm":1,"foto":"fotos/PF-033-2d150a72.webp"},
