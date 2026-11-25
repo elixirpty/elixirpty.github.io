@@ -7,16 +7,22 @@
 .vit-cap{position:absolute;left:0;right:0;bottom:14px;text-align:center;z-index:1;font:500 11px/1.2 Jost,sans-serif;letter-spacing:.34em;text-transform:uppercase;color:#bfae8a;transition:opacity .4s}
 .vit-cap b{display:block;font:600 17px Cinzel,serif;letter-spacing:.14em;color:#f1cf7a;margin-bottom:4px}
 .nich{all:unset;box-sizing:border-box;position:relative;cursor:pointer;border-radius:12px;overflow:hidden;display:flex;align-items:flex-end;justify-content:center;
-  background:linear-gradient(180deg,rgba(0,0,0,.25),rgba(0,0,0,.6)),url(../img/vitrina/piedra.webp) center/220%;
+  background:linear-gradient(180deg,rgba(0,0,0,.45),rgba(0,0,0,.72)),url(../img/vitrina/piedra.webp) center/220%;
   box-shadow:inset 0 0 0 1px rgba(212,150,42,.35),inset 0 14px 30px rgba(0,0,0,.65),0 0 0 1px rgba(0,0,0,.4);-webkit-tap-highlight-color:transparent;transition:transform .35s ease,box-shadow .35s}
-.nich:before{content:"";position:absolute;left:50%;top:0;width:46%;height:3px;transform:translateX(-50%);border-radius:0 0 6px 6px;background:#ffe6a8;box-shadow:0 0 14px 3px rgba(255,214,140,.7);z-index:2}
-.nich:after{content:"";position:absolute;inset:0;background:radial-gradient(70% 55% at 50% 0,rgba(255,214,140,.42),rgba(255,214,140,.08) 55%,transparent 75%),linear-gradient(180deg,transparent 60%,rgba(0,0,0,.55));z-index:1;pointer-events:none;animation:vit-luz 4.5s ease-in-out infinite}
-.nich img{position:relative;z-index:1;width:auto;height:50%;max-width:80%;object-fit:contain;margin-bottom:27%;filter:drop-shadow(0 12px 14px rgba(0,0,0,.7));-webkit-box-reflect:below 3px linear-gradient(transparent 62%,rgba(255,255,255,.22))}
+.nich:before{content:"";position:absolute;left:50%;top:0;width:46%;height:3px;transform:translateX(-50%);border-radius:0 0 6px 6px;background:#ffe6a8;box-shadow:0 0 14px 3px rgba(255,214,140,.7);z-index:2;opacity:.18;transition:opacity .4s ease}
+.nich:after{content:"";position:absolute;inset:0;background:radial-gradient(70% 55% at 50% 0,rgba(255,214,140,.42),rgba(255,214,140,.08) 55%,transparent 75%),linear-gradient(180deg,transparent 60%,rgba(0,0,0,.55));z-index:1;pointer-events:none;opacity:0;transition:opacity .6s ease}
+.nich img{position:relative;z-index:1;width:auto;height:50%;max-width:80%;object-fit:contain;margin-bottom:27%;filter:drop-shadow(0 12px 14px rgba(0,0,0,.7)) brightness(.07) saturate(0);transition:filter .7s ease;-webkit-box-reflect:below 3px linear-gradient(transparent 62%,rgba(255,255,255,.22))}
 .nich .lbl{position:absolute;left:0;right:0;bottom:9px;z-index:3;text-align:center;font:600 11px Cinzel,serif;letter-spacing:.16em;text-transform:uppercase;color:#f4eee2;text-shadow:0 1px 6px #000}
 .nich .lbl small{display:block;font:500 8px Jost,sans-serif;letter-spacing:.22em;color:#e0a33a;margin-top:2px}
 .nich:active{transform:scale(.97)}
-.nich.soon img{filter:drop-shadow(0 12px 14px rgba(0,0,0,.7)) brightness(.55) saturate(.7)}
-.nich.soon:after{opacity:.45}
+/* encendido: al pasar el cursor, al enfocar o al tocar */
+.nich:hover:before,.nich:focus-visible:before,.nich.lit:before{opacity:1}
+.nich:hover:after,.nich:focus-visible:after,.nich.lit:after{opacity:1}
+.nich:hover img,.nich:focus-visible img,.nich.lit img{filter:drop-shadow(0 12px 14px rgba(0,0,0,.7)) brightness(1) saturate(1)}
+.nich .lbl{transition:color .4s}
+.nich:not(:hover):not(.lit) .lbl{color:#9c907b}
+.nich.soon:hover img,.nich.soon.lit img{filter:drop-shadow(0 12px 14px rgba(0,0,0,.7)) brightness(.75) saturate(.85)}
+.nich.soon:hover:after,.nich.soon.lit:after{opacity:.6}
 @keyframes vit-luz{0%,100%{opacity:.92}50%{opacity:1}}
 /* escena ampliada */
 .vit-stage{position:absolute;inset:0;z-index:4;visibility:hidden;background:#0b0907 url(../img/vitrina/piedra.webp) center/cover}
@@ -39,4 +45,4 @@
 .vit.shown .vit-back{opacity:1}
 @media (max-width:380px){.vit-b a{text-decoration:none;padding:9px 14px;font-size:11px;letter-spacing:.12em}.vit-t{font-size:26px}.vit-d{font-size:12px}}
 @media (min-width:760px){.vit{height:440px}.vit-row{inset:22px 22% 64px}.vit-bottle{top:10%;height:58%}.vit-t{font-size:38px}}
-@media (prefers-reduced-motion:reduce){.nich:after{animation:none}.vit-row,.vit-txt{transition:none}}
+@media (prefers-reduced-motion:reduce){.nich:after,.nich img{transition:none}.vit-row,.vit-txt{transition:none}}

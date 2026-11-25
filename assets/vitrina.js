@@ -74,7 +74,7 @@ function montar(box){
     var n = vit.querySelectorAll('.nich')[actual];
     var R = vit.getBoundingClientRect(), r = n.getBoundingClientRect();
     vit.classList.remove('shown');
-    var fin = function(){ vit.classList.remove('open'); actual = null; };
+    var fin = function(){ vit.classList.remove('open'); actual = null; vit.querySelectorAll('.nich.lit').forEach(function(x){ x.classList.remove('lit'); }); };
     if(sinAnim || reduce || !stage.animate || !R.width){ fin(); return; }
     var a = stage.animate([
       { clipPath: 'inset(0px 0px 0px 0px round 0px)' },
@@ -84,7 +84,13 @@ function montar(box){
   }
 
   vit.querySelectorAll('.nich').forEach(function(n){
-    n.addEventListener('click', function(){ abrir(+n.dataset.i); });
+    // Se enciende la luz del nicho y luego la cámara hace zoom
+    n.addEventListener('touchstart', function(){ n.classList.add('lit'); }, { passive: true });
+    n.addEventListener('click', function(){
+      if(actual !== null) return;
+      n.classList.add('lit');
+      setTimeout(function(){ abrir(+n.dataset.i); }, reduce ? 0 : 420);
+    });
   });
   stage.querySelector('.vit-back').addEventListener('click', function(){ cerrar(); });
   // Cada vez que se abre o se cierra la ventana, la vitrina vuelve a mostrar los 3 nichos
