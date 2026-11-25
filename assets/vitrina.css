@@ -1,6 +1,6 @@
 /* Vitrina de categorías (Árabes · Diseñador · Nicho) */
 .has-vit #chips{display:none}
-.vit{position:relative;margin:6px 0 18px;border-radius:20px;overflow:hidden;height:clamp(360px,92vw,470px);
+.vit{position:relative;flex:0 0 100%;width:100%;box-sizing:border-box;order:0;margin:6px 0 18px;border-radius:20px;overflow:hidden;height:clamp(360px,92vw,470px);
   background:#0b0907 url(../img/vitrina/piedra.webp) center/cover;box-shadow:inset 0 0 0 1px rgba(212,150,42,.28),0 18px 40px rgba(0,0,0,.45);isolation:isolate}
 .vit:before{content:"";position:absolute;inset:0;background:radial-gradient(120% 70% at 50% -10%,rgba(0,0,0,0) 0,rgba(0,0,0,.55) 70%),linear-gradient(180deg,rgba(0,0,0,.15),rgba(0,0,0,.55));z-index:0;pointer-events:none}
 .vit-row{position:absolute;inset:16px 12px 58px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;z-index:1;transition:opacity .45s ease,transform .7s cubic-bezier(.7,0,.2,1)}
@@ -32,10 +32,11 @@
 .vit-t{margin:4px 0 2px;font:600 30px/1.05 Cinzel,serif;letter-spacing:.08em;color:#f4eee2}
 .vit-t em{font-style:normal;background:linear-gradient(180deg,#f8e2a0,#d4952a);-webkit-background-clip:text;background-clip:text;color:transparent}
 .vit-d{font:400 13px/1.45 Jost,sans-serif;color:#d8ccb4;margin:0 auto 12px;max-width:320px}
-.vit-b{display:flex;gap:10px;justify-content:center}
+.vit-b{display:flex;flex-wrap:wrap;gap:8px 10px;justify-content:center}
 .vit-b button{all:unset;cursor:pointer;padding:10px 20px;border-radius:999px;font:600 12px Jost,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#1a1206;background:linear-gradient(135deg,#f6dc8e,#d79a2c 55%,#f1cf7a);box-shadow:0 6px 16px rgba(214,150,40,.28)}
 .vit-b button.ghost{color:#f1cf7a;background:none;box-shadow:inset 0 0 0 1.5px rgba(224,163,58,.6)}
 .vit-back{all:unset;cursor:pointer;position:absolute;left:12px;top:12px;z-index:5;padding:7px 12px;border-radius:999px;font:500 11px Jost,sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#f1cf7a;background:rgba(0,0,0,.45);box-shadow:inset 0 0 0 1px rgba(224,163,58,.45);opacity:0;transition:opacity .3s .3s}
 .vit.shown .vit-back{opacity:1}
+@media (max-width:380px){.vit-b button{padding:9px 14px;font-size:11px;letter-spacing:.12em}.vit-t{font-size:26px}.vit-d{font-size:12px}}
 @media (min-width:760px){.vit{height:440px}.vit-row{inset:22px 22% 64px}.vit-bottle{top:10%;height:58%}.vit-t{font-size:38px}}
 @media (prefers-reduced-motion:reduce){.nich:after{animation:none}.vit-row,.vit-txt{transition:none}}
