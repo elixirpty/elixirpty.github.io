@@ -1,9 +1,16 @@
 /* Vitrina de colecciones (se abre con «Ver catálogo» en Inicio):
    3 nichos iluminados; al tocar uno, zoom tipo cámara y se elige Hombres / Mujeres / Todos */
 (function(){
-  var modal = document.getElementById('x-cats');
-  var box = modal && modal.querySelector('.xc-box');
-  if(!box) return;
+  // La ventana #x-cats la crea app.js al tocar «Ver catálogo»: se espera a que aparezca
+  function buscar(){
+    var m = document.getElementById('x-cats'), bx = m && m.querySelector('.xc-box');
+    if(bx && !bx.querySelector('.vit')) montar(bx);
+  }
+  buscar();
+  new MutationObserver(buscar).observe(document.body, { childList: true, subtree: true });
+})();
+
+function montar(box){
   var shelf = box.querySelector('.xc-shelf');
   var IMG = 'img/vitrina/';
   var CATS = [
@@ -84,4 +91,4 @@
   document.addEventListener('click', function(e){
     if(e.target.closest && (e.target.closest('.xc-x') || e.target.closest('a.cta'))) cerrar(true);
   }, true);
-})();
+}
