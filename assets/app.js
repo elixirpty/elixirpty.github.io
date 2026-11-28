@@ -1019,3 +1019,6 @@ if($('#grid')){
     })();
   }
 })();
+
+/* Chat en vivo Tawk.to (abajo a la izquierda para no tapar el boton del pedido) */
+;(function(){if(window.__tawkOn)return;window.__tawkOn=1;window.Tawk_API=window.Tawk_API||{};Tawk_API.customStyle={visibility:{desktop:{position:'bl',xOffset:16,yOffset:16},mobile:{position:'bl',xOffset:10,yOffset:84}}};window.Tawk_LoadStart=new Date();var s=document.createElement('script');s.async=true;s.src='https://embed.tawk.to/6b0a6418f586bb3cfe747c3a/1k8g9e04g';s.charset='UTF-8';s.setAttribute('crossorigin','*');document.head.appendChild(s);})();
