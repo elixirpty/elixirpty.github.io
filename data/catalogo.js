@@ -1,5 +1,5 @@
 window.ELIXIR_CATALOGO = {
-"actualizado": "2026-11-25T23:32:01Z",
+"actualizado": "2026-11-28T04:39:13Z",
 "whatsapp": "50762003794",
 "itbms": 0,
 "preciosProvisionales": false,
@@ -53,8 +53,8 @@ window.ELIXIR_CATALOGO = {
 {"id":"PF-057","sku":"ELX-LAT-057","marca":"Lattafa","modelo":"Musamam","conc":"Eau de Parfum","genero":"Mujer","tipo":"\u00c1rabe","ml":100,"precios":{"5":5,"10":9},"foto":"fotos/PF-057-2064f9b3.webp"},
 {"id":"PF-055","sku":"ELX-LAT-055","marca":"Lattafa","modelo":"Yara","conc":"Eau de Parfum","genero":"Mujer","tipo":"\u00c1rabe","ml":100,"precios":{"5":4,"10":7},"inm":1,"foto":"fotos/PF-055-31c04d05.webp"},
 {"id":"PF-016","sku":"ELX-MAI-016","marca":"Maison Alhambra","modelo":"Vibe","conc":"Eau de Parfum","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":4,"10":7},"inm":1,"foto":"fotos/PF-016-1e5930db.webp"},
-{"id":"PF-048","sku":"ELX-MON-048","marca":"Montblanc","modelo":"Legend - Blanco","conc":"Eau de Parfum","genero":"Hombre","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":5,"10":9},"foto":"fotos/PF-048-147a8eb1.webp"},
-{"id":"PF-008","sku":"ELX-PAC-008","marca":"Paco Rabanne","modelo":"1 Million Black","conc":"Eau de Parfum","genero":"Hombre","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":8,"10":15},"inm":1,"foto":"fotos/PF-008-d692f2a2.webp","mes":1},
+{"id":"PF-048","sku":"ELX-MON-048","marca":"Montblanc","modelo":"Legend Spirit","conc":"Eau de Parfum","genero":"Hombre","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":5,"10":9},"foto":"fotos/PF-048-147a8eb1.webp"},
+{"id":"PF-008","sku":"ELX-PAC-008","marca":"Paco Rabanne","modelo":"1 Million Black","conc":"Eau de Parfum","genero":"Hombre","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":8,"10":15},"inm":1,"foto":"fotos/PF-008-52c6cb20.webp","mes":1},
 {"id":"PF-019","sku":"ELX-PAC-019","marca":"Paco Rabanne","modelo":"1 Million Royal","conc":"Parfum","genero":"Hombre","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":8,"10":15},"inm":1,"foto":"fotos/PF-019-188182a6.webp"},
 {"id":"PF-017","sku":"ELX-PAC-017","marca":"Paco Rabanne","modelo":"Victory","conc":"Eau de Parfum","genero":"Hombre","tipo":"Dise\u00f1ador","ml":100,"precios":{"5":7,"10":12},"foto":"fotos/PF-017-f8a87712.webp"},
 {"id":"PF-022","sku":"ELX-RAS-022","marca":"Rasasi","modelo":"Elixir","conc":"Eau de Parfum","genero":"Hombre","tipo":"\u00c1rabe","ml":100,"precios":{"5":5,"10":9},"inm":1,"foto":"fotos/PF-022-25cae7ab.webp"},
