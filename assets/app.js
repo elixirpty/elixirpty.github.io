@@ -741,14 +741,14 @@ $('#f-fuente').innerHTML = '<option value="">Elige una opción</option>' + FUENT
   const handle = v => clean(v).replace(/^@/, '').replace(/[^A-Za-z0-9._]/g, '');
   const url = (v, base) => { v = clean(v); if(!v) return ''; if(/^https:\/\//i.test(v)) return v; if(/^http:\/\//i.test(v)) return 'https://' + v.slice(7); if(base){ const h = handle(v); return h ? base + h : ''; } return /^[\w.-]+\.[a-z]{2,}(\/|$)/i.test(v) ? 'https://' + v : ''; };
   const abs = f => new URL(f, document.baseURI).href;   // la máscara se resuelve respecto al CSS, así que va con ruta completa
-  const LOGO = {'Instagram': abs('img/redes/instagram-oro.png'), 'TikTok': abs('img/redes/tiktok-oro.png'), 'Threads': abs('img/redes/threads-oro.png')};
+  const LOGO = {'Instagram': abs('img/redes/instagram-oro.png'), 'TikTok': abs('img/redes/tiktok-oro.png'), 'Threads': abs('img/redes/threads-oro.png'), 'Facebook': abs('img/redes/facebook-oro.png')};
   const IC = {
     'Instagram': '<path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/>',
     'TikTok': '<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
     'Threads': '<circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/>',
     'Más enlaces': '<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>'
   };
-  [['Instagram', url(R.instagram, 'https://www.instagram.com/')], ['TikTok', url(R.tiktok, 'https://www.tiktok.com/@')], ['Threads', url(R.threads, 'https://www.threads.net/@')]]
+  [['Instagram', url(R.instagram, 'https://www.instagram.com/')], ['Facebook', url(R.facebook || 'https://www.facebook.com/1473432485853333', 'https://www.facebook.com/')], ['TikTok', url(R.tiktok, 'https://www.tiktok.com/@')], ['Threads', url(R.threads, 'https://www.threads.net/@')]]
     .forEach(([t, u]) => { if(u) out.push('<a href="' + esc(u) + '" target="_blank" rel="noopener" aria-label="' + t + '" title="' + t + '">' + (LOGO[t] ? '<i class="lg" aria-hidden="true" style="--m:url(' + LOGO[t] + ')"></i>' : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">' + IC[t] + '</svg>') + '</a>'); });
   if(out.length){ $('#social').innerHTML = out.join(''); $('#social').hidden = false; }
   const rs = ((EXTERNO && EXTERNO.resenas) || []).filter(r => r && clean(r.t)).slice(0, 6);
