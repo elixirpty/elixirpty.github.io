@@ -1020,47 +1020,5 @@ if($('#grid')){
   }
 })();
 
-/* Chat ELIXIR: boton propio + preguntas rapidas + chat en vivo Tawk.to */
-;(function(){if(window.__tawkOn)return;window.__tawkOn=1;
-var QA=[
-['\u00bfVenden perfumes completos?','\u00a1S\u00ed! Adem\u00e1s de decants, conseguimos perfumes completos 100% originales y sellados. El precio depende de la disponibilidad: escr\u00edbenos el perfume y el tama\u00f1o y te lo cotizamos. Si no est\u00e1 en el cat\u00e1logo, p\u00eddelo en <a href="pide-tu-perfume.html">Pide tu perfume</a>.'],
-['\u00bfC\u00f3mo son las entregas?','\u2022 <b>Estaciones del Metro de Panam\u00e1:</b> entrega en persona, gratis.<br>\u2022 <b>Delivery a domicilio:</b> costo adicional seg\u00fan la zona.<br>\u2022 <b>Interior del pa\u00eds:</b> por Ferguson o Uno Express.<br>Coordinamos el d\u00eda y la hora contigo al confirmar tu pedido.'],
-['\u00bfCu\u00e1nto cuesta el env\u00edo?','La entrega en estaciones del Metro es <b>gratis</b>. El delivery y los env\u00edos al interior tienen un costo adicional seg\u00fan la zona o la empresa de encomienda; te lo confirmamos antes de enviar tu pedido.'],
-['\u00bfC\u00f3mo puedo pagar?','Efectivo, Yappy o transferencia a Banco General.<br>\u2022 <b>Metro:</b> pagas al recibir.<br>\u2022 <b>Delivery o interior</b> (Ferguson / Uno Express): pagas por adelantado por Yappy o transferencia, el pedido m\u00e1s el env\u00edo.'],
-['\u00bfQu\u00e9 es un decant?','Es tu perfume original en un frasco de 5 o 10 ml, para que lo disfrutes sin comprar el frasco completo.'],
-['\u00bfSon originales?','S\u00ed, 100% originales. Cada decant se prepara directamente del frasco original, sin mezclas ni diluciones.'],
-['\u00bfCu\u00e1nto dura un decant?','Un decant de 5 ml rinde unas 75 atomizaciones y uno de 10 ml unas 150.'],
-['\u00bfC\u00f3mo hago mi pedido?','Elige tus perfumes en el <a href="catalogo.html">cat\u00e1logo</a>, arma tu pedido y env\u00edalo por WhatsApp. Te confirmamos el total, la entrega y el pago.'],
-['\u00bfCompran o intercambian perfumes?','S\u00ed. Cu\u00e9ntanos qu\u00e9 perfume tienes en <a href="vende-o-intercambia.html">Vende o intercambia</a>.']];
-var css='.fab,#qk-list{display:none!important}'+
-'.xchat{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:60;display:flex;align-items:center;gap:10px;height:56px;padding:0 20px 0 7px;border:0;border-radius:999px;cursor:pointer;font:600 15px/1 Jost,Montserrat,system-ui,sans-serif;letter-spacing:.03em;color:#1a1206;background:linear-gradient(135deg,#fbe7a6,#d79a2c 55%,#f6d27f);box-shadow:0 0 0 2px rgba(255,230,160,.35),0 10px 28px rgba(214,150,40,.45)}'+
-'.xchat i{width:42px;height:42px;border-radius:50%;background:#0b0907;display:grid;place-items:center;box-shadow:inset 0 0 0 1.5px #e0a33a}.xchat svg{width:22px;height:22px}'+
-'.xchat:before{content:"";position:absolute;inset:-6px;border-radius:999px;border:2px solid rgba(240,195,90,.55);animation:xp 2.4s ease-out infinite;pointer-events:none}@keyframes xp{0%{opacity:.9;transform:scale(.96)}100%{opacity:0;transform:scale(1.14)}}'+
-'.xchat .n{position:absolute;top:-4px;right:-4px;min-width:20px;height:20px;border-radius:10px;background:#e0313b;color:#fff;font:700 12px/20px system-ui,sans-serif;text-align:center;font-style:normal;display:none}'+
-'body.has-bar .xchat,body.has-bar .xpan{bottom:calc(78px + env(safe-area-inset-bottom))}'+
-'.xpan{position:fixed;right:14px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:61;width:min(380px,calc(100vw - 28px));max-height:min(620px,calc(100vh - 110px));display:none;flex-direction:column;border-radius:20px;overflow:hidden;background:#0d0b09;color:#efe6d2;box-shadow:0 0 0 1px rgba(224,163,58,.55),0 24px 60px rgba(0,0,0,.6);font:400 14px/1.45 Jost,Montserrat,system-ui,sans-serif}'+
-'.xpan.on{display:flex}.xpan header{padding:16px 46px 14px 18px;background:linear-gradient(135deg,#1c150b,#0b0907);border-bottom:1px solid rgba(224,163,58,.35)}'+
-'.xpan header b{display:block;font:600 18px Cinzel,Georgia,serif;letter-spacing:.06em;color:#f1cf7a}.xpan header span{font-size:13px;color:#bfae8a}'+
-'.xpan .x{position:absolute;top:12px;right:12px;width:32px;height:32px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:#f1cf7a;font-size:20px;line-height:32px;cursor:pointer}'+
-'.xpan .q{overflow:auto;padding:8px 12px}.xpan details{border-bottom:1px solid rgba(224,163,58,.18)}.xpan summary{list-style:none;cursor:pointer;padding:12px 26px 12px 6px;position:relative;font-weight:600;color:#f4eee2}'+
-'.xpan summary::-webkit-details-marker{display:none}.xpan summary:after{content:"+";position:absolute;right:6px;top:9px;font-size:20px;color:#e0a33a}.xpan details[open] summary:after{content:"\u2013"}'+
-'.xpan .a{padding:0 6px 12px;color:#d8ccb4}.xpan .a a{color:#f1cf7a}.xpan .a b{color:#f4eee2}'+
-'.xpan footer{padding:12px;border-top:1px solid rgba(224,163,58,.25)}.xpan .go{width:100%;height:48px;border:0;border-radius:999px;cursor:pointer;font:700 15px Jost,Montserrat,system-ui,sans-serif;color:#1a1206;background:linear-gradient(135deg,#fbe7a6,#d79a2c 55%,#f6d27f)}'+
-'@media(max-width:639px){.xchat{height:52px;padding:0 16px 0 6px}.xchat span{font-size:14px}}@media(prefers-reduced-motion:reduce){.xchat:before{animation:none}}';
-var st=document.createElement('style');st.textContent=css;document.head.appendChild(st);
-var b=document.createElement('button');b.className='xchat';b.type='button';b.setAttribute('aria-label','Abrir ayuda y chat de ELIXIR');
-b.innerHTML='<i><svg viewBox="0 0 24 24" fill="none" stroke="#f1cf7a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-11.6 7.1L4 20l1-4.6A8 8 0 1 1 21 12z"/><path d="M8.5 12h.01M12 12h.01M15.5 12h.01"/></svg></i><span>\u00bfTe ayudamos?</span><em class="n"></em>';
-var p=document.createElement('div');p.className='xpan';p.setAttribute('role','dialog');p.setAttribute('aria-label','Preguntas frecuentes de ELIXIR');
-p.innerHTML='<header><b>ELIXIR</b><span>\u00bfEn qu\u00e9 te ayudamos?</span><button class="x" type="button" aria-label="Cerrar">\u00d7</button></header><div class="q">'+QA.map(function(x){return '<details><summary>'+x[0]+'</summary><div class="a">'+x[1]+'</div></details>'}).join('')+'</div><footer><button class="go" type="button">\ud83d\udcac Chatear con nosotros</button></footer>';
-function add(){document.body.appendChild(p);document.body.appendChild(b);}
-if(document.body)add();else document.addEventListener('DOMContentLoaded',add);
-var T=window.Tawk_API=window.Tawk_API||{};
-function hideT(){try{T.hideWidget()}catch(e){}}
-T.onBeforeLoad=hideT;T.onLoad=hideT;
-T.onChatMinimized=function(){hideT();b.style.display='';};
-T.onUnreadCountChanged=function(c){var n=b.querySelector('.n');n.textContent=c;n.style.display=c?'block':'none';};
-b.onclick=function(){p.classList.add('on');b.style.display='none';};
-p.querySelector('.x').onclick=function(){p.classList.remove('on');b.style.display='';};
-p.querySelector('.go').onclick=function(){p.classList.remove('on');try{T.showWidget();T.maximize();}catch(e){b.style.display='';}};
-window.Tawk_LoadStart=new Date();var s=document.createElement('script');s.async=true;s.src='https://embed.tawk.to/6b0a6418f586bb3cfe747c3a/1k8g9e04g';s.charset='UTF-8';s.setAttribute('crossorigin','*');document.head.appendChild(s);
-})();
+/* Tawk.to: solo para ver en vivo quien entra a la pagina (el chat queda oculto; se usa el boton Escribenos) */
+;(function(){if(window.__tawkOn)return;window.__tawkOn=1;var T=window.Tawk_API=window.Tawk_API||{};function h(){try{T.hideWidget()}catch(e){}}T.onBeforeLoad=h;T.onLoad=h;T.onChatMaximized=h;T.onChatStarted=h;window.Tawk_LoadStart=new Date();var s=document.createElement('script');s.async=true;s.src='https://embed.tawk.to/6b0a6418f586bb3cfe747c3a/1k8g9e04g';s.charset='UTF-8';s.setAttribute('crossorigin','*');document.head.appendChild(s);})();
